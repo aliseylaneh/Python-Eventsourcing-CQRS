@@ -1,10 +1,8 @@
 from fastapi import Depends
-from fastapi import FastAPI
+
 from src.domain.models import Store
-
+from src.main import app
 from src.services.store import GetStoreQueryService
-
-app = FastAPI()
 
 
 @app.get("/store/{id}", response_model=Store)
