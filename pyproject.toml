@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "base"
+name = "store"
 version = "0.1.0"
 description = ""
 authors = ["aliseylaneh <aliseylaneh@gmail.com>"]
@@ -10,6 +10,8 @@ python = "^3.11"
 fastapi = "^0.110.2"
 uvicorn = "^0.29.0"
 sqlalchemy = "^2.0.29"
+setuptools = "^69.5.1"
+python-dotenv = "^1.0.1"
 
 
 [build-system]

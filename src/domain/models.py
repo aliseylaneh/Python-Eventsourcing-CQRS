@@ -1,15 +1,13 @@
-import uuid
-from datetime import datetime
-
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
-class BaseTimeStamp(BaseModel):
-    created_at: datetime = Field(default_factory=datetime.now)
-    updated_at: datetime = Field()
-
-
-class Store(BaseModel, BaseTimeStamp):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+class BaseStore(BaseModel):
     name: str
     address: str
+
+
+class Store(BaseStore):
+    id: int
+
+    class Config:
+        orm_mode = True

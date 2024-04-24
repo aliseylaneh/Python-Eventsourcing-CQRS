@@ -1,5 +1,5 @@
-from ..db_session import Base
-from sqlalchemy import Column, Integer, String, TIMESTAMP, Boolean, text
+from src.infrastructure.settings.database import Base
+from sqlalchemy import Column, Integer, String, TIMESTAMP, text
 
 
 class Store(Base):
