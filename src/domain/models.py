@@ -9,7 +9,7 @@ class BaseTimeStamp(BaseModel):
     updated_at: datetime = Field()
 
 
-class Store(BaseModel):
+class Store(BaseModel, BaseTimeStamp):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     name: str
     address: str
