@@ -1,8 +1,8 @@
 from fastapi import Depends
 from fastapi import FastAPI
-from src.domain.models import Store
+from domain.models import Store
 
-from src.services.store import GetStoreQueryService
+from services.store import GetStoreQueryService
 
 app = FastAPI()
 

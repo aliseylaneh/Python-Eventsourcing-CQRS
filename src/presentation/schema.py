@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from src.domain.models import BaseStore, Store
+from domain.models import BaseStore, Store
 
 
 class CreateStore(BaseStore):

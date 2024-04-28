@@ -1,4 +1,4 @@
-from src.infrastructure.settings.database import Base
+from infrastructure.settings.database import Base
 from sqlalchemy import Column, Integer, String, TIMESTAMP, text
 
 

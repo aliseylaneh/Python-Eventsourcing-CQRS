@@ -1,6 +1,6 @@
 import uuid
 
-from src.infrastructure.repositories.store_info import StoreQueryRepository
+from infrastructure.repositories.store_info import StoreQueryRepository
 
 
 class BaseStoreQuery:
