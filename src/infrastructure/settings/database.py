@@ -10,9 +10,10 @@ from sqlalchemy.ext.asyncio import (
     create_async_engine,
 )
 
-async def get_db_session() -> AsyncGenerator[AsyncSession ,None]:
+
+async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
     engine = create_async_engine(SQLALCHEMY_DATABASE_URL)
-    factory =  async_sessionmaker(engine)
+    factory = async_sessionmaker(engine)
     async with factory() as session:
         try:
             yield session
