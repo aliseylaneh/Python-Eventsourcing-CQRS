@@ -1,7 +1,7 @@
-from presentation.schema import CreateStore, UpdateStore
 from sqlalchemy import BinaryExpression, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from presentation.schema import CreateStore, UpdateStore
 from ..models.store import Store
 from ..settings.database import get_db_session
 
