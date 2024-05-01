@@ -1,10 +1,9 @@
-import uuid
-from typing import Any
-from ..settings.database import get_db_session
-from ..models.store import Store
+from sqlalchemy import BinaryExpression, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from ...presentation.schema import CreateStore, UpdateStore
+from presentation.schema import CreateStore, UpdateStore
+from ..models.store import Store
+from ..settings.database import get_db_session
 
 
 class StoreCommandRepository:
@@ -33,5 +32,8 @@ class StoreQueryRepository:
     async def all(self, skip: int = 0, limit: int = 20):
         return await self.db_session.query(Store).offset(skip).limit(limit).all()
 
-    async def filter_by_fields(self, data: dict[str, Any]):
-        pass
+    async def filter_by_fields(self, *expressions: BinaryExpression):
+        query = select(Store)
+        if expressions:
+            query = query.where(*expressions)
+        return list(await self.db_session.scalars(query))
