@@ -24,13 +24,16 @@ class StoreCommandRepository:
 
 class StoreQueryRepository:
     def __init__(self):
-        self.db_session: AsyncSession = get_db_session()
+        self.db_session = get_db_session()
 
     async def find_by_id(self, pk: int) -> Store:
-        return await self.db_session.query(Store).filter(Store.id == pk).first()
+        result = await self.db_session.execute(select(Store).where(pk == Store.id))
+        store = result.scalars().first()
+        return store
 
     async def all(self, skip: int = 0, limit: int = 20):
-        return await self.db_session.query(Store).offset(skip).limit(limit).all()
+        results = await self.db_session.execute(select(Store).offset(skip).limit(limit))
+        return results.scalars().all()
 
     async def filter_by_fields(self, *expressions: BinaryExpression):
         query = select(Store)

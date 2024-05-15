@@ -9,14 +9,10 @@ from sqlalchemy.ext.asyncio import (
 
 from .settings import DATABASE_URL
 
+engine = create_async_engine(DATABASE_URL)
+factory = async_sessionmaker(engine)
 
-async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
-    engine = create_async_engine(DATABASE_URL)
-    factory = async_sessionmaker(engine)
-    async with factory() as session:
-        try:
-            yield session
-            await session.commit()
-        except exc.SQLAlchemyError as e:
-            await session.rollback()
-            raise e
+
+def get_db_session() -> AsyncSession:
+    session = factory()
+    return session
