@@ -10,11 +10,12 @@ class StoreCommandRepository:
     def __init__(self):
         self.db_session: AsyncSession = get_db_session()
 
-    async def create(self, store: CreateStore):
-        new_store = Store(name=store.name, address=store.address)
+    async def create(self, store: CreateStore) -> Store:
+        new_store = Store(name=store.name, address=store.address, logo=store.logo)
         self.db_session.add(new_store)
         await self.db_session.commit()
         await self.db_session.refresh(new_store)
+        return new_store
 
     async def update(self, store: UpdateStore):
         await self.db_session.query(Store).filter(Store.id == store.id).update(
