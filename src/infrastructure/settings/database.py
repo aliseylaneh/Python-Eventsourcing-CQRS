@@ -1,6 +1,3 @@
-from collections.abc import AsyncGenerator
-
-from sqlalchemy import exc
 from sqlalchemy.ext.asyncio import (
     AsyncSession,
     async_sessionmaker,
