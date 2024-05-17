@@ -1,6 +1,4 @@
-from typing import Annotated
-
-from pydantic import BaseModel, Base64Bytes, EncodedBytes, Base64Encoder, FileUrl
+from pydantic import BaseModel, FileUrl
 
 
 class BaseStore(BaseModel):

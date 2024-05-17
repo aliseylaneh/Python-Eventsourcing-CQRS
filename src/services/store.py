@@ -1,6 +1,8 @@
+import asyncio
 import uuid
 
-from infrastructure.repositories.store import StoreQueryRepository, StoreCommandRepository
+from infrastructure.repositories.store import StoreCommandRepository, StoreQueryRepository
+from infrastructure.services.minio import minio_service
 from presentation.schema import CreateStore
 
 
@@ -21,4 +23,7 @@ class GetStoreQueryService(BaseStoreQuery):
 
 class CreateStoreCommandService(BaseStoreCommand):
     async def handle(self, store: CreateStore):
-        return await self.repository.create(store=store)
+        created_store = await self.repository.create(store=store)
+        await minio_service.save(file=store.logo, name="Test")
+        result = await GetStoreQueryService().handle(pk=created_store.id)
+        return result
