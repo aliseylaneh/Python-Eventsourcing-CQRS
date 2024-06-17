@@ -24,11 +24,11 @@ class Inventory:
 
     def reserve(self, quantity: int):
         if self.soh <= 0:
-            raise OutOfStock
-
+            raise OutOfStock()
         if self.available_quantity < quantity:
             raise OutOfStock()
         self.reserved += quantity
+        self._set_available_quantity()
 
 
 class ReserveInventoryUseCase:
