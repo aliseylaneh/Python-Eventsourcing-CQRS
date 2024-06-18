@@ -1,7 +1,7 @@
 import uuid
 from dataclasses import dataclass
 
-from internal.domain.events.base import ReserveStockEvent
+
 from internal.domain.exceptions.inventory import OutOfStock
 
 
@@ -32,7 +32,7 @@ class Inventory:
 
 
 class ReserveInventoryUseCase:
-    def reserve(self, reserve_event: ReserveStockEvent) -> Inventory:
+    def reserve(self, reserve_event) -> Inventory:
         inventory = self.repository.find_by_sku(sku=reserve_event.sku)
         inventory.reserve(quantity=reserve_event.quantity)
         self.repository.update(inventory)

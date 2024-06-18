@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "store"
+name = "invenotry"
 version = "0.1.0"
 description = ""
 authors = ["aliseylaneh <aliseylaneh@gmail.com>"]
@@ -13,7 +13,7 @@ sqlalchemy = "^2.0.29"
 setuptools = "^69.5.1"
 python-dotenv = "^1.0.1"
 alembic = "^1.13.1"
-psycopg = {extras = ["binary"], version = "^3.1.19"}
+psycopg = { extras = ["binary"], version = "^3.1.19" }
 python-multipart = "^0.0.9"
 minio = "^7.2.7"
 
