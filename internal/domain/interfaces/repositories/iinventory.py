@@ -8,15 +8,15 @@ from internal.domain.events.v1.inventory import *
 class IInventoryCommandRepository(ABC):
 
     @abstractmethod
-    def create(self, event: InventoryCreatedEvent) -> Inventory:
+    def create(self, inventory: Inventory) -> Inventory:
         raise NotImplementedError
 
     @abstractmethod
-    def increase_soh(self, event: SOHIncreasedEvent) -> Inventory:
+    def increase_soh(self, inventory: Inventory) -> Inventory:
         raise NotImplementedError
 
     @abstractmethod
-    def decrease_soh(self, event: SOHDecreasedEvent) -> Inventory:
+    def decrease_soh(self, inventory: Inventory) -> Inventory:
         raise NotImplementedError
 
     @abstractmethod

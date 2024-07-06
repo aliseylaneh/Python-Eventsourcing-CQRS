@@ -6,13 +6,14 @@ from internal.domain.interfaces.repositories.iinventory import IInventoryCommand
 
 
 class InventoryElasticSearchCommandRepository(IInventoryCommandRepository):
-    def create(self, event: InventoryCreatedEvent) -> Inventory:
+
+    def create(self, inventory: Inventory) -> Inventory:
         pass
 
-    def increase_soh(self, event: SOHIncreasedEvent) -> Inventory:
+    def increase_soh(self, inventory: Inventory) -> Inventory:
         pass
 
-    def decrease_soh(self, event: SOHDecreasedEvent) -> Inventory:
+    def decrease_soh(self, inventory: Inventory) -> Inventory:
         pass
 
     def reserve(self, event: StockReservedEvent) -> Inventory:
