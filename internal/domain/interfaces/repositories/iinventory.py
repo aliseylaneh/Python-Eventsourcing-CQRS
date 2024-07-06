@@ -2,7 +2,6 @@ import uuid
 from abc import ABC, abstractmethod
 
 from internal.domain.entities.inventory import Inventory
-from internal.domain.events.v1.inventory import *
 
 
 class IInventoryCommandRepository(ABC):
@@ -20,7 +19,7 @@ class IInventoryCommandRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def reserve(self, event: StockReservedEvent) -> Inventory:
+    def reserve(self, inventory: Inventory) -> Inventory:
         raise NotImplementedError
 
 

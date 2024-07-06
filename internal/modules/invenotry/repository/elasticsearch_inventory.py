@@ -1,11 +1,13 @@
 import uuid
 
 from internal.domain.entities.inventory import Inventory
-from internal.domain.events.v1.inventory import StockReservedEvent, SOHDecreasedEvent, SOHIncreasedEvent, InventoryCreatedEvent
 from internal.domain.interfaces.repositories.iinventory import IInventoryCommandRepository, IInventoryQueryRepository
 
 
 class InventoryElasticSearchCommandRepository(IInventoryCommandRepository):
+
+    def reserve(self, inventory: Inventory) -> Inventory:
+        pass
 
     def create(self, inventory: Inventory) -> Inventory:
         pass
@@ -16,8 +18,6 @@ class InventoryElasticSearchCommandRepository(IInventoryCommandRepository):
     def decrease_soh(self, inventory: Inventory) -> Inventory:
         pass
 
-    def reserve(self, event: StockReservedEvent) -> Inventory:
-        pass
 
 
 class InventoryElasticSearchQueryRepository(IInventoryQueryRepository):

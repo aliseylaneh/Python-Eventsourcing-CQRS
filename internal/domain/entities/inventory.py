@@ -13,18 +13,18 @@ class Inventory:
     reserved: int
 
     def __init__(self):
-        self._set_soh(soh=self.soh)
+        self._update_soh(soh=self.soh)
 
-    def _set_available_quantity(self):
+    def _update_available_quantity(self):
         self.available_quantity = self.soh - self.reserved
 
-    def _set_soh(self, soh: int):
+    def _update_soh(self, soh: int):
         self.soh = self.soh - soh
 
-    def reserve(self, quantity: int):
+    def reserve_stock(self, quantity: int):
         if self.soh <= 0:
             raise OutOfStock()
         if self.available_quantity < quantity:
             raise OutOfStock()
         self.reserved += quantity
-        self._set_available_quantity()
+        self._update_available_quantity()

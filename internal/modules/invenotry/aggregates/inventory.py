@@ -1,9 +1,7 @@
 from internal.domain.aggregates.inventory import AggregateRoot
 from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
-from internal.domain.events.v1.inventory import InventoryEventType, StockReservedEvent, SOHIncreasedEvent
-from internal.modules.invenotry.repository.elasticsearch_inventory import InventoryElasticSearchCommandRepository
-from internal.modules.invenotry.repository.mongo_inventory import InventoryMongoCommandRepository
+from internal.modules.invenotry import InventoryEventType, SOHIncreasedEvent, StockReservedEvent
 
 
 class InventoryAggregate(AggregateRoot):
@@ -20,7 +18,9 @@ class InventoryAggregate(AggregateRoot):
         self._when(event=event)
 
     def _handle_reserve_stock_command(self, event: StockReservedEvent):
-        self.inventory.reserve(event.quantity)
+        self.inventory.reserve_stock(event.quantity)
+        self.write_repository.reserve(inventory=self.inventory)
+        self.event_repository.reserve(inventory=self.inventory)
 
     def _handle_increase_soh_command(self, event: SOHIncreasedEvent):
         pass

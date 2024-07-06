@@ -1,5 +1,5 @@
 from internal.domain.commands.commands import BaseCommand
-from internal.domain.events.v1.inventory import StockReservedEvent
+from internal.modules.invenotry.events.v1.inventory import StockReservedEvent
 
 
 class ReserveStockCommand(BaseCommand):
