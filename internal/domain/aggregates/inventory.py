@@ -1,4 +1,4 @@
-from abc import abstractmethod, ABC
+from abc import ABC, abstractmethod
 
 from internal.domain.events.base import Event
 from internal.domain.interfaces.repositories.iinventory import IInventoryCommandRepository
@@ -9,7 +9,7 @@ class AggregateRoot(ABC):
         self.write_repository = write_repository
         self.event_repository = event_repository
         self._events: list[Event] = []
-        self._uncommited_events: list[Event] = []
+        self._uncommitted_events: list[Event] = []
 
     @abstractmethod
     def apply(self, event: Event):
