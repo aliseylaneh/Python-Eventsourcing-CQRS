@@ -4,7 +4,7 @@ from internal.domain.events.base import Event
 from internal.domain.interfaces.repositories.iinventory import IInventoryCommandRepository
 
 
-class IAggregateRoot(ABC):
+class AggregateRoot(ABC):
     def __init__(self, write_repository: IInventoryCommandRepository, event_repository: IInventoryCommandRepository):
         self.write_repository = write_repository
         self.event_repository = event_repository

@@ -1,4 +1,4 @@
-from internal.domain.aggregates.inventory import IAggregateRoot
+from internal.domain.aggregates.inventory import AggregateRoot
 from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
 from internal.domain.events.v1.inventory import InventoryEventType, StockReservedEvent, SOHIncreasedEvent
@@ -6,7 +6,7 @@ from internal.modules.invenotry.repository.elasticsearch_inventory import Invent
 from internal.modules.invenotry.repository.mongo_inventory import InventoryMongoCommandRepository
 
 
-class InventoryAggregate(IAggregateRoot):
+class InventoryAggregate(AggregateRoot):
     inventory: Inventory
 
     def _when(self, event: Event):
