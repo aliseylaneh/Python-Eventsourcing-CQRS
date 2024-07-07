@@ -11,16 +11,8 @@ class InventoryAggregate(AggregateRoot):
         match event.event_type:
             case InventoryEventType.STOCK_RESERVED:
                 self._handle_reserve_stock(event=event)
-            case InventoryEventType.SOH_INCREASED:
-                self._handle_increase_soh(event=event)
 
-    def apply(self, event: Event):
-        self._when(event=event)
-
-    def _handle_reserve_stock(self, event: StockReservedEvent):
+    def _handle_reserve_stock(self, event: Event | StockReservedEvent):
         self.inventory = self.repository.find_by_sku(sku=event.sku)
         self.inventory.reserve_stock(event.quantity)
         self.repository.reserve(inventory=self.inventory)
-
-    def _handle_increase_soh(self, event: SOHIncreasedEvent):
-        pass

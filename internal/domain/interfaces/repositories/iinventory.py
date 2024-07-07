@@ -2,12 +2,17 @@ import uuid
 from abc import ABC, abstractmethod
 
 from internal.domain.entities.inventory import Inventory
+from internal.domain.events.base import Event
 
 
 class IInventoryRepository(ABC):
     def __init__(self, collection, events_collection):
         self._collection = collection
         self._events_collection = events_collection
+
+    @abstractmethod
+    def save_events(self, event: list[Event]):
+        raise NotImplementedError
 
     @abstractmethod
     def create(self, inventory: Inventory) -> Inventory:

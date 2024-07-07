@@ -9,9 +9,24 @@ class AggregateRoot(ABC):
         self.repository = repository
 
     @abstractmethod
-    def apply(self, event: Event):
-        pass
-
-    @abstractmethod
     def _when(self, event: Event):
-        pass
+        raise NotImplementedError
+
+    def __enter__(self):
+        self.events: list[Event] = []
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type is None:
+            self.commit()
+        else:
+            self.events = []
+
+    def commit(self):
+        self.repository.save_events(event=self.events)
+
+    def _apply(self, event: Event):
+        self._when(event)
+        self.events.append(event)
+
+    def apply(self, event: Event):
+        self._apply(event=event)

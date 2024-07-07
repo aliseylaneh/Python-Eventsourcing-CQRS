@@ -1,21 +1,13 @@
-from fastapi import Depends, APIRouter, HTTPException, UploadFile
-from domain.models import Store
-from presentation.schema import CreateStore
-from services.store import GetStoreQueryService, CreateStoreCommandService
+from fastapi import Depends, APIRouter, HTTPException
+
+from internal.domain.interfaces.iuse_case import IUseCase
+from internal.modules.invenotry.commands.inventory import ReserveStockCommand
+from internal.modules.invenotry.dependencies.inventory import get_reserve_stock_command
 
 router = APIRouter()
 
 
-@router.get("/store/{pk}", response_model=Store, )
-async def get_store(pk: int, service: GetStoreQueryService = Depends(GetStoreQueryService)):
-    query = await service.handle(pk=pk)
-    if not query:
-        raise HTTPException(status_code=400, detail="Given id store not found!!")
-    return query
-
-
-@router.post("/store", response_model=Store, )
-async def create_store(store: CreateStore,
-                       service: CreateStoreCommandService = Depends(CreateStoreCommandService)):
-    query = await service.handle(store=store)
+@router.patch("/inventory/reserve", response_model=None, )
+def reserve(use_case: ReserveStockCommand = Depends(get_reserve_stock_command)):
+    query = use_case.execute(sku='test', quantity=2)
     return query
