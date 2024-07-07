@@ -1,11 +1,11 @@
 from internal.domain.aggregates.inventory import AggregateRoot
-from internal.domain.entities.inventory import InventoryProjection
+from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
 from internal.modules.invenotry import InventoryEventType, SOHIncreasedEvent, StockReservedEvent
 
 
 class InventoryAggregate(AggregateRoot):
-    inventory: InventoryProjection
+    inventory: Inventory
 
     def _when(self, event: Event):
         match event.event_type:

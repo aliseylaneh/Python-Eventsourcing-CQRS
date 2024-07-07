@@ -5,7 +5,7 @@ from internal.domain.exceptions.inventory import OutOfStock
 
 
 @dataclass
-class InventoryProjection:
+class Inventory:
     reference: uuid
     sku: int
     soh: int
