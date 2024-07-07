@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from collections import deque
 
 from internal.domain.events.base import Event
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
@@ -13,7 +14,7 @@ class AggregateRoot(ABC):
         raise NotImplementedError
 
     def __enter__(self):
-        self.events: list[Event] = []
+        self.events: deque[Event] = deque()
 
     def __exit__(self, exc_type, exc_val, exc_tb):
         if exc_type is None:
@@ -22,11 +23,12 @@ class AggregateRoot(ABC):
             self.events = []
 
     def commit(self):
-        self.repository.save_events(event=self.events)
+        self.repository.bulk_insert(event=self.events)
 
-    def _apply(self, event: Event):
-        self._when(event)
+    def _apply(self, event):
+        self._when(event=event)
         self.events.append(event)
 
-    def apply(self, event: Event):
-        self._apply(event=event)
+    def apply(self, events: deque[Event]):
+        for event in events:
+            self._apply(event=event)

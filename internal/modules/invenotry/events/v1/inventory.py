@@ -11,6 +11,7 @@ class InventoryEventType(enum.Enum):
     STOCK_RESERVED = 'STOCK_RESERVED'
     SOH_INCREASED = 'SOH_INCREASED'
     SOH_DECREASED = 'SOH_DECREASED'
+    AVAILABLE_QUANTITY_DECREASED = 'AVAILABLE_QUANTITY_DECREASED'
 
 
 @dataclass
@@ -35,9 +36,14 @@ class InventoryDeletedEvent(Event):
 
 
 @dataclass
-class StockReservedEvent(BaseInventoryDetailEvent):
+class ReserveQuantityIncreasedEvent(BaseInventoryDetailEvent):
     quantity: int
     event_type = InventoryEventType.STOCK_RESERVED
+
+
+class AvailableQuantityDecreasedEvent(BaseInventoryDetailEvent):
+    quantity: int
+    event_type = InventoryEventType.AVAILABLE_QUANTITY_DECREASED
 
 
 @dataclass

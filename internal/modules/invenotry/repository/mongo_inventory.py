@@ -1,4 +1,5 @@
 import uuid
+from collections import deque
 
 from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
@@ -6,8 +7,8 @@ from internal.domain.interfaces.repositories.iinventory import IInventoryReposit
 
 
 class InventoryMongoRepository(IInventoryRepository):
-    def save_events(self, events: list[Event]):
-        events = [event.__dict__ for event in events]
+    def bulk_insert(self, events: deque[Event]):
+        events = deque(event.__dict__ for event in events)
         self._events_collection.insert_many(events)
 
     def create(self, inventory: Inventory) -> Inventory:
