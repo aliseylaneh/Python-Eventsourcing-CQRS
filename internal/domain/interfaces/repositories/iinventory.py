@@ -5,6 +5,9 @@ from internal.domain.entities.inventory import Inventory
 
 
 class IInventoryRepository(ABC):
+    def __init__(self, collection, events_collection):
+        self._collection = collection
+        self._events_collection = events_collection
 
     @abstractmethod
     def create(self, inventory: Inventory) -> Inventory:

@@ -16,6 +16,7 @@ alembic = "^1.13.1"
 psycopg = { extras = ["binary"], version = "^3.1.19" }
 python-multipart = "^0.0.9"
 minio = "^7.2.7"
+pymongo = {extras = ["srv"], version = "^4.8.0"}
 
 
 [build-system]
