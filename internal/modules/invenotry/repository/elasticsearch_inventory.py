@@ -1,10 +1,10 @@
 import uuid
 
 from internal.domain.entities.inventory import Inventory
-from internal.domain.interfaces.repositories.iinventory import IInventoryCommandRepository, IInventoryQueryRepository
+from internal.domain.interfaces.repositories.iinventory import IInventoryRepository, IInventoryQueryRepository
 
 
-class InventoryElasticSearchCommandRepository(IInventoryCommandRepository):
+class InventoryElasticSearchCommandRepository(IInventoryRepository):
 
     def reserve(self, inventory: Inventory) -> Inventory:
         pass
