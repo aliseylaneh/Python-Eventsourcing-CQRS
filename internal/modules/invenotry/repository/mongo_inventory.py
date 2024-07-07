@@ -1,18 +1,18 @@
-from internal.domain.entities.inventory import Inventory
+from internal.domain.entities.inventory import InventoryProjection
 from internal.domain.interfaces.repositories.iinventory import IInventoryCommandRepository
 
 
 class InventoryMongoCommandRepository(IInventoryCommandRepository):
 
-    def reserve(self, inventory: Inventory) -> Inventory:
+    def reserve(self, inventory: InventoryProjection) -> InventoryProjection:
         pass
 
-    def create(self, inventory: Inventory) -> Inventory:
+    def create(self, inventory: InventoryProjection) -> InventoryProjection:
         pass
 
-    def increase_soh(self, inventory: Inventory) -> Inventory:
+    def increase_soh(self, inventory: InventoryProjection) -> InventoryProjection:
         pass
 
-    def decrease_soh(self, inventory: Inventory) -> Inventory:
+    def decrease_soh(self, inventory: InventoryProjection) -> InventoryProjection:
         pass
 
