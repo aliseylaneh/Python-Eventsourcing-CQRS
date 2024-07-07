@@ -12,10 +12,3 @@ class Inventory:
     available_quantity: int
     reserved: int
 
-    def reserve_stock(self, quantity: int) -> int:
-        if self.soh <= 0:
-            raise OutOfStock()
-        if self.available_quantity < quantity:
-            raise OutOfStock()
-        self.reserved += quantity
-        return self.available_quantity

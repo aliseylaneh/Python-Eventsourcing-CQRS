@@ -7,6 +7,4 @@ from internal.modules.invenotry.events.v1.inventory import ReserveQuantityIncrea
 class ReserveStockCommand(BaseCommand):
     def execute(self, sku: str, quantity: int):
         with self.aggregate:
-            reserve_stock = deque()
-            reserve_stock.append(ReserveQuantityIncreasedEvent(sku=sku, quantity=quantity))
-            self.aggregate.apply(events=reserve_stock)
+            self.aggregate.apply(events=deque([ReserveQuantityIncreasedEvent(sku=sku, quantity=quantity)]))

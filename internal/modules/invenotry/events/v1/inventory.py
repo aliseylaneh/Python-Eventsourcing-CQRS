@@ -41,6 +41,7 @@ class ReserveQuantityIncreasedEvent(BaseInventoryDetailEvent):
     event_type = InventoryEventType.STOCK_RESERVED
 
 
+@dataclass
 class AvailableQuantityDecreasedEvent(BaseInventoryDetailEvent):
     quantity: int
     event_type = InventoryEventType.AVAILABLE_QUANTITY_DECREASED
