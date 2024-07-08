@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from collections import deque
 
-from internal.domain.events.base import Event
-from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
+from domain.events.base import Event
+from domain.interfaces.repositories.iinventory import IInventoryRepository
 
 
 class AggregateRoot(ABC):
