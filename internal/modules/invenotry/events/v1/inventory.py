@@ -24,17 +24,7 @@ class BaseInventorySOHEvent(Event):
     soh: int
 
 
-@dataclass
-class InventoryCreatedEvent(BaseInventoryDetailEvent, BaseInventorySOHEvent):
-    event_type = InventoryEventType.INVENTORY_CREATED
-
-
-@dataclass
-class InventoryDeletedEvent(Event):
-    reference_id: int
-    event_type: str = InventoryEventType.INVENTORY_DELETED
-
-
+# OPERATIONAL EVENTS
 @dataclass
 class ReserveQuantityIncreasedEvent(BaseInventoryDetailEvent):
     quantity: int
@@ -45,6 +35,18 @@ class ReserveQuantityIncreasedEvent(BaseInventoryDetailEvent):
 class AvailableQuantityDecreasedEvent(BaseInventoryDetailEvent):
     quantity: int
     event_type = InventoryEventType.AVAILABLE_QUANTITY_DECREASED
+
+
+# CRUD EVENTS
+@dataclass
+class InventoryCreatedEvent(BaseInventoryDetailEvent, BaseInventorySOHEvent):
+    event_type = InventoryEventType.INVENTORY_CREATED
+
+
+@dataclass
+class InventoryDeletedEvent(Event):
+    reference_id: int
+    event_type: str = InventoryEventType.INVENTORY_DELETED
 
 
 @dataclass
