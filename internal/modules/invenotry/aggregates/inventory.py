@@ -26,8 +26,8 @@ class InventoryAggregate(AggregateRoot):
         """
         When ever we try to reserve a considered amount of quantity from an Inventory this handler is initiated by
         ReserveQuantityIncreasedEvent. The most important thing is that when we increase the amount of reserve quantity
-        in an Inventory we should decrease the amount of Available Quantity too, because that amount is not available to
-        user for reservation.
+        in an Inventory we should decrease the amount of Available Quantity too, because that amount is not available
+        to user for reservation.
         :param event:
         :return:
         """
