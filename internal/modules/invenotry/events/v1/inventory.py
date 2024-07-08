@@ -2,7 +2,7 @@ import enum
 import uuid
 from dataclasses import dataclass
 
-from internal.domain.events.base import Event
+from .....domain.events.base import Event
 
 
 class InventoryEventType(enum.Enum):

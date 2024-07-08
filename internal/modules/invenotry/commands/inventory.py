@@ -1,7 +1,7 @@
 from collections import deque
 
-from internal.domain.commands.commands import BaseCommand
-from internal.modules.invenotry.events.v1.inventory import ReserveQuantityIncreasedEvent
+from ..events.v1.inventory import ReserveQuantityIncreasedEvent
+from ....domain.commands.commands import BaseCommand
 
 
 class ReserveStockCommand(BaseCommand):

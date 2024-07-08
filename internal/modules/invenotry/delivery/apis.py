@@ -1,13 +1,13 @@
-from fastapi import Depends, APIRouter, HTTPException
+from fastapi import APIRouter, Depends
 
-from internal.domain.interfaces.iuse_case import IUseCase
-from internal.modules.invenotry.commands.inventory import ReserveStockCommand
-from internal.modules.invenotry.dependencies.inventory import get_reserve_stock_command
+from ..commands.inventory import ReserveStockCommand
+from ..dependencies.inventory import get_reserve_stock_command
+from ..dto.inventory import InventoryReserveStock
 
 router = APIRouter()
 
 
 @router.patch("/inventory/reserve", response_model=None, )
-def reserve(use_case: ReserveStockCommand = Depends(get_reserve_stock_command)):
-    query = use_case.execute(sku='test', quantity=2)
+def reserve(reserve_stock: InventoryReserveStock, use_case: ReserveStockCommand = Depends(get_reserve_stock_command)):
+    query = use_case.execute(sku=reserve_stock.sku, quantity=reserve_stock.quantity)
     return query
