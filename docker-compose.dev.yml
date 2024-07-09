@@ -37,7 +37,7 @@ services:
       - mongo-data:/data/db
 
   mongo-express:
-    image: mongo-express
+    image: inventory-mongo-express
     ports:
       - "8081:8081"
     environment:
