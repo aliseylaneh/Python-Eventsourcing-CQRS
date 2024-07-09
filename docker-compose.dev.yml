@@ -37,7 +37,8 @@ services:
       - mongo-data:/data/db
 
   mongo-express:
-    image: inventory-mongo-express
+    image: mongo-express:latest
+    container_name: inventory-mongo-express
     ports:
       - "8081:8081"
     environment:
@@ -49,9 +50,6 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: 1234
     links:
       - mongo
-
-
-
 
 
 volumes:
