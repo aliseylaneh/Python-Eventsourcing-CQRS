@@ -12,7 +12,7 @@ class IInventoryRepository(ABC):
         self._events_collection = events_collection
 
     @abstractmethod
-    def bulk_insert(self, event: deque[Event]):
+    def bulk_insert(self, events: deque[Event]):
         raise NotImplementedError
 
     @abstractmethod

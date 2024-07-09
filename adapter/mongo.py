@@ -16,4 +16,4 @@ def mongo_db_connection():
     """
     connection_string = f"mongodb://{default_config.username}:{default_config.password}@{default_config.host}/{default_config.database}"
     client = MongoClient(connection_string)
-    return client
+    return client['inventory']

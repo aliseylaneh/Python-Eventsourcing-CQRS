@@ -12,7 +12,7 @@ class InventoryMongoRepository(IInventoryRepository):
         self._events_collection.insert_many(events)
 
     def find_by_sku(self, sku: str) -> Inventory | None:
-        pass
+        return Inventory(reference=1, sku='SKU-TEST', available_quantity=100, reserved=10, soh=1200)
 
     def find_by_id(self, pk: uuid) -> Inventory | None:
         pass

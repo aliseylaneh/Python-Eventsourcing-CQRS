@@ -7,8 +7,7 @@ from internal.domain.exceptions.inventory import OutOfStock
 @dataclass
 class Inventory:
     reference: uuid
-    sku: int
+    sku: str
     soh: int
     available_quantity: int
     reserved: int
-
