@@ -14,6 +14,9 @@ def mongo_db_connection():
     This handle creating a connection for specific database base on mongodb
     :return mongo database:
     """
-    connection_string = f"mongodb://{default_config.username}:{default_config.password}@{default_config.host}/{default_config.database}"
-    client = MongoClient(connection_string)
+
+    client = MongoClient(host=default_config.host,
+                         port=default_config.port,
+                         username=default_config.username,
+                         password=default_config.password)
     return client['inventory']

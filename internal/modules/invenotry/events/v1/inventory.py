@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from .....domain.events.base import Event
 
 
-class InventoryEventType(Enum):
+class InventoryEventType(str, Enum):
     INVENTORY_CREATED = 'INVENTORY_CREATED'
     INVENTORY_DELETED = 'INVENTORY_DELETED'
     STOCK_RESERVED = 'STOCK_RESERVED'
