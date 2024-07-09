@@ -3,7 +3,8 @@ from fastapi import Depends
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
 from internal.modules.invenotry.aggregates.inventory import InventoryAggregate
 from internal.modules.invenotry.commands.inventory import ReserveStockCommand
-from pkg.mongodb.mongodb import mongo_db_connection
+from adapter.mongo import mongo_db_connection
+from internal.modules.invenotry.repository.mongo_inventory import InventoryMongoRepository
 
 
 def get_inventory_collection():
@@ -16,7 +17,7 @@ def get_event_collection():
 
 def inventory_repository(inventory_collection=Depends(get_inventory_collection),
                          events_collection=Depends(get_event_collection)) -> IInventoryRepository:
-    return IInventoryRepository(collection=inventory_collection, events_collection=events_collection)
+    return InventoryMongoRepository(collection=inventory_collection, events_collection=events_collection)
 
 
 def inventory_aggregate(repository=Depends(inventory_repository)) -> InventoryAggregate:

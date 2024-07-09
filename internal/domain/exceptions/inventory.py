@@ -1,6 +1,5 @@
+from enum import Enum
 from typing import Type
-
-from internal.domain.aggregates.inventory import AggregateRoot
 
 
 class OutOfStock(Exception):
@@ -12,5 +11,6 @@ class NotAvailable(Exception):
 
 
 class InvalidRelatedEventType(Exception):
-    def __init__(self, event_type: str, aggregate: Type[AggregateRoot]):
+
+    def __init__(self, event_type: Enum, aggregate):
         super(InvalidRelatedEventType, self).__init__(f"Event type {event_type} isn't related to aggregate {aggregate.__class__}")

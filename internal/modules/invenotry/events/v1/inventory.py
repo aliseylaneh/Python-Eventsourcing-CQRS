@@ -1,11 +1,11 @@
-import enum
+from enum import Enum
 import uuid
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from .....domain.events.base import Event
 
 
-class InventoryEventType(enum.Enum):
+class InventoryEventType(Enum):
     INVENTORY_CREATED = 'INVENTORY_CREATED'
     INVENTORY_DELETED = 'INVENTORY_DELETED'
     STOCK_RESERVED = 'STOCK_RESERVED'
@@ -16,44 +16,26 @@ class InventoryEventType(enum.Enum):
 
 @dataclass
 class BaseInventoryDetailEvent(Event):
-    sku: uuid
+    sku: uuid = field(default=0)
+    event_type: InventoryEventType
 
 
 @dataclass
 class BaseInventorySOHEvent(Event):
-    soh: int
+    soh: int = field(default=0)
+
+
+@dataclass
+class QuantityEvent(BaseInventoryDetailEvent):
+    quantity: int = field(default=0)
 
 
 # OPERATIONAL EVENTS
 @dataclass
-class ReserveQuantityIncreasedEvent(BaseInventoryDetailEvent):
-    quantity: int
-    event_type = InventoryEventType.STOCK_RESERVED
+class ReserveQuantityIncreasedEvent(QuantityEvent):
+    event_type: InventoryEventType = InventoryEventType.STOCK_RESERVED
 
 
 @dataclass
-class AvailableQuantityDecreasedEvent(BaseInventoryDetailEvent):
-    quantity: int
-    event_type = InventoryEventType.AVAILABLE_QUANTITY_DECREASED
-
-
-# CRUD EVENTS
-@dataclass
-class InventoryCreatedEvent(BaseInventoryDetailEvent, BaseInventorySOHEvent):
-    event_type = InventoryEventType.INVENTORY_CREATED
-
-
-@dataclass
-class InventoryDeletedEvent(Event):
-    reference_id: int
-    event_type: str = InventoryEventType.INVENTORY_DELETED
-
-
-@dataclass
-class SOHIncreasedEvent(BaseInventorySOHEvent):
-    event_type: str = InventoryEventType.SOH_INCREASED
-
-
-@dataclass
-class SOHDecreasedEvent(BaseInventorySOHEvent):
-    event_type: str = InventoryEventType.SOH_DECREASED
+class AvailableQuantityDecreasedEvent(QuantityEvent):
+    event_type: InventoryEventType = InventoryEventType.AVAILABLE_QUANTITY_DECREASED

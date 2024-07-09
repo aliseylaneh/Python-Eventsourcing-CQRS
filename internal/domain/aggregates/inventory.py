@@ -1,8 +1,8 @@
 from abc import ABC, abstractmethod
 from collections import deque
 
-from domain.events.base import Event
-from domain.interfaces.repositories.iinventory import IInventoryRepository
+from internal.domain.events.base import Event
+from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
 
 
 class AggregateRoot(ABC):
@@ -21,6 +21,7 @@ class AggregateRoot(ABC):
             self.commit()
         else:
             self.events = []
+            raise exc_type(exc_val, exc_tb)
 
     def commit(self):
         self.repository.bulk_insert(event=self.events)

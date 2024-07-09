@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from invenotry.delivery.apis import router as inventory_router
+from internal.modules.invenotry.delivery.apis import router as inventory_router
 
 app = FastAPI()
 
