@@ -7,9 +7,8 @@ from internal.domain.events.base import Event
 
 
 class IInventoryRepository(ABC):
-    def __init__(self, collection, events_collection):
+    def __init__(self, collection):
         self._collection = collection
-        self._events_collection = events_collection
 
     @abstractmethod
     def bulk_insert(self, events: deque[Event]):

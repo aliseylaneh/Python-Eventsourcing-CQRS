@@ -10,7 +10,7 @@ from internal.domain.interfaces.repositories.iinventory import IInventoryReposit
 class InventoryMongoRepository(IInventoryRepository):
     def bulk_insert(self, events: deque[Event]):
         events = deque(event.__dict__ for event in events)
-        self._events_collection.insert_many(events)
+        self._collection.insert_many(events)
 
     def find_by_sku(self, sku: str) -> Inventory:
         inventory = Inventory()

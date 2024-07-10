@@ -40,6 +40,9 @@ class ReserveQuantityIncreasedEvent(QuantityEvent):
 class AvailableQuantityDecreasedEvent(QuantityEvent):
     event_type: InventoryEventType = InventoryEventType.AVAILABLE_QUANTITY_DECREASED
 
+    def __post_init__(self):
+        self.quantity = -self.quantity
+
 
 # CRUD EVENTS
 @dataclass

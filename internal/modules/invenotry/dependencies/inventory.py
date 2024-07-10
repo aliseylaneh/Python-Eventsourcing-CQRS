@@ -11,13 +11,8 @@ def get_inventory_collection():
     return mongo_db_connection()['inventory']
 
 
-def get_event_collection():
-    return mongo_db_connection()['inventory_events']
-
-
-def inventory_repository(inventory_collection=Depends(get_inventory_collection),
-                         events_collection=Depends(get_event_collection)) -> IInventoryRepository:
-    return InventoryMongoRepository(collection=inventory_collection, events_collection=events_collection)
+def inventory_repository(collection=Depends(get_inventory_collection)) -> IInventoryRepository:
+    return InventoryMongoRepository(collection=collection)
 
 
 def inventory_aggregate(repository=Depends(inventory_repository)) -> InventoryAggregate:
