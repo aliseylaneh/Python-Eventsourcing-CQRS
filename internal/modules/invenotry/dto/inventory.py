@@ -1,3 +1,5 @@
+import uuid
+
 from pydantic import BaseModel, validator
 from pydantic_core import ValidationError
 
@@ -13,3 +15,17 @@ class InventoryReserveStock(BaseModel):
         if v <= 0:
             raise QuantityError()
         return v
+
+
+class CreateInventory(BaseModel):
+    sku: str
+    soh: int
+    available_quantity: int
+
+
+class CreateInventoryResponse(BaseModel):
+    reference: uuid.UUID
+    sku: str
+    soh: int
+    reserved: int
+    available_quantity: int

@@ -2,7 +2,7 @@ from fastapi import Depends
 
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
 from internal.modules.invenotry.aggregates.inventory import InventoryAggregate
-from internal.modules.invenotry.commands.inventory import ReserveStockCommand
+from internal.modules.invenotry.commands.inventory import ReserveStockCommand, CreateInventoryCommand
 from adapter.mongo import mongo_db_connection
 from internal.modules.invenotry.repository.mongo_inventory import InventoryMongoRepository
 
@@ -26,3 +26,7 @@ def inventory_aggregate(repository=Depends(inventory_repository)) -> InventoryAg
 
 def get_reserve_stock_command(aggregate=Depends(inventory_aggregate)) -> ReserveStockCommand:
     return ReserveStockCommand(aggregate=aggregate)
+
+
+def get_create_inventory_command(aggregate=Depends(inventory_aggregate)) -> CreateInventoryCommand:
+    return CreateInventoryCommand(aggregate=aggregate)
