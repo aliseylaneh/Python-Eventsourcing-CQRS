@@ -42,9 +42,6 @@ class AvailableQuantityDecreasedEvent(BaseInventoryDetailEvent):
     event_type: InventoryEventType = InventoryEventType.AVAILABLE_QUANTITY_DECREASED
     available_quantity: int = field(default=0)
 
-    def __post_init__(self):
-        self.available_quantity = -self.available_quantity
-
 
 # CRUD EVENTS
 @dataclass

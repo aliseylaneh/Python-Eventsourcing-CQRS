@@ -24,7 +24,6 @@ class CreateInventory(BaseModel):
 
 
 class CreateInventoryResponse(BaseModel):
-    reference: uuid.UUID
     sku: str
     soh: int
     reserved: int

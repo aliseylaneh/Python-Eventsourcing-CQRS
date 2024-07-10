@@ -5,6 +5,7 @@ from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
 from internal.domain.exceptions.inventory import InventoryDoesNotExists
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
+from internal.modules.invenotry.repository.mongo_projection import MongoProjection
 
 
 class InventoryMongoRepository(IInventoryRepository):
@@ -13,8 +14,11 @@ class InventoryMongoRepository(IInventoryRepository):
         self._collection.insert_many(events)
 
     def find_by_sku(self, sku: str) -> Inventory:
+        projector = MongoProjection()
         inventory = Inventory()
         if not inventory.sku == sku:
+            # TODO
+            projector.recreate_state()
             raise InventoryDoesNotExists()
         return inventory
 

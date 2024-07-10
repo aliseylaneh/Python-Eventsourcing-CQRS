@@ -21,7 +21,7 @@ class InventoryAggregate(AggregateRoot):
             case InventoryEventType.AVAILABLE_QUANTITY_DECREASED:
                 self._on_decrease_available_quantity(event=event)
 
-    def _get_inventory(self, sku: str):
+    def _construct_inventory(self, sku: str):
         self.inventory = Inventory(sku=sku, soh=100, available_quantity=60, reserved=0)
         # if not self.inventory:
         #     self.inventory = self.repository.find_by_sku(sku=sku)
@@ -35,12 +35,8 @@ class InventoryAggregate(AggregateRoot):
         :param event:
         :return:
         """
-        self._get_inventory(sku=event.sku)
-        if self.inventory.soh <= 0:
-            raise OutOfStock()
-        if self.inventory.available_quantity < event.reserved:
-            raise OutOfStock()
-        self.inventory.reserved += event.reserved
+        self._construct_inventory(sku=event.sku)
+        self.inventory.increase_reserved(amount=event.reserved)
         self.apply(events=deque([AvailableQuantityDecreasedEvent(available_quantity=event.reserved, sku=event.sku)]))
 
     def _on_decrease_available_quantity(self, event: Event | AvailableQuantityDecreasedEvent):
@@ -50,8 +46,8 @@ class InventoryAggregate(AggregateRoot):
         :param event:
         :return:
         """
-        self._get_inventory(sku=event.sku)
-        self.inventory.available_quantity += event.available_quantity
+        self._construct_inventory(sku=event.sku)
+        self.inventory.decrease_available_quantity(amount=event.available_quantity)
 
     def apply(self, events: deque[Event]):
         for event in events:
