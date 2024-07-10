@@ -7,7 +7,7 @@ from ....domain.commands.commands import BaseCommand
 class ReserveStockCommand(BaseCommand):
     def execute(self, sku: str, quantity: int):
         with self.aggregate:
-            self.aggregate.apply(events=deque([ReserveQuantityIncreasedEvent(sku=sku, quantity=quantity)]))
+            self.aggregate.apply(events=deque([ReserveQuantityIncreasedEvent(sku=sku, reserved=quantity)]))
 
 
 class CreateInventoryCommand(BaseCommand):
