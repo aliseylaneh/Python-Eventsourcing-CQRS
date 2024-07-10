@@ -13,7 +13,7 @@ class InventoryMongoRepository(IInventoryRepository):
         self._events_collection.insert_many(events)
 
     def find_by_sku(self, sku: str) -> Inventory:
-        inventory = Inventory(reference='', sku='SKU-TEST', available_quantity=1000, reserved=500, soh=3000)
+        inventory = Inventory()
         if not inventory.sku == sku:
             raise InventoryDoesNotExists()
         return inventory
