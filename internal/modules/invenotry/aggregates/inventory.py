@@ -3,7 +3,7 @@ from collections import deque
 from internal.domain.aggregates.inventory import AggregateRoot
 from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
-from internal.domain.exceptions.inventory import InvalidRelatedEventType, OutOfStock
+from internal.domain.exceptions.inventory import InvalidRelatedEventType, OutOfStock, QuantityError
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
 from internal.modules.invenotry.events.v1.inventory import AvailableQuantityDecreasedEvent, InventoryEventType, \
     ReserveQuantityIncreasedEvent

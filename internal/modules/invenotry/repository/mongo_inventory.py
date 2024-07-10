@@ -3,6 +3,7 @@ from collections import deque
 
 from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
+from internal.domain.exceptions.inventory import InventoryDoesNotExists
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
 
 
@@ -11,8 +12,11 @@ class InventoryMongoRepository(IInventoryRepository):
         events = deque(event.__dict__ for event in events)
         self._events_collection.insert_many(events)
 
-    def find_by_sku(self, sku: str) -> Inventory | None:
-        return Inventory(reference=1, sku='SKU-TEST', available_quantity=100, reserved=10, soh=1200)
+    def find_by_sku(self, sku: str) -> Inventory:
+        inventory = Inventory(reference='', sku='SKU-TEST', available_quantity=1000, reserved=500, soh=3000)
+        if not inventory.sku == sku:
+            raise InventoryDoesNotExists()
+        return inventory
 
-    def find_by_id(self, pk: uuid) -> Inventory | None:
+    def find_by_id(self, pk: uuid) -> Inventory:
         pass

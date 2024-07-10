@@ -16,9 +16,9 @@ class IInventoryRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def find_by_sku(self, sku: str) -> Inventory | None:
-        inventory = Inventory(reference='', sku='', available_quantity=0, reserved=0, soh=0)
+    def find_by_sku(self, sku: str) -> Inventory:
+        raise NotImplementedError
 
     @abstractmethod
-    def find_by_id(self, pk: uuid) -> Inventory | None:
+    def find_by_id(self, pk: uuid) -> Inventory:
         raise NotImplementedError
