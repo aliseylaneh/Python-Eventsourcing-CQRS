@@ -20,10 +20,8 @@ class MongoProjection(IInventoryProjection):
                                           available_quantity=int(event['available_quantity']),
                                           reserved=int(event['reserved']))
                 case InventoryEventType.STOCK_RESERVED:
-                    event: ReserveQuantityIncreasedEvent = event
                     inventory.increase_reserved(int(event['reserved']))
                 case InventoryEventType.AVAILABLE_QUANTITY_DECREASED:
-                    event: AvailableQuantityDecreasedEvent = event
                     inventory.update_available_quantity(amount=int(event['available_quantity']))
 
         return inventory
