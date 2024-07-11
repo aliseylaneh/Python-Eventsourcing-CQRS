@@ -15,6 +15,11 @@ class InventoryAggregate(AggregateRoot):
         self.inventory = None
 
     def _when(self, event: Event):
+        """
+        This function will call the specific logic handler depending on the event type of the Event
+        :param event:
+        :return:
+        """
         match event.event_type:
             case InventoryEventType.STOCK_RESERVED:
                 self._on_reserve_stock(event=event)
@@ -24,6 +29,13 @@ class InventoryAggregate(AggregateRoot):
                 self._on_create_inventory(event=event)
 
     def _construct_inventory(self, sku: str):
+        """
+        Constructing inventory is necessarily for inventory aggregate, so before applying event logics current state of aggregate
+        instance must be recreated. This function will call repository to get the inventory for specific sku, and it fulfils the
+        purpose of reconstructing the instance current state.
+        :param sku:
+        :return:
+        """
         if not self.inventory:
             self.inventory = self.repository.find_by_sku(sku=sku)
 
@@ -63,6 +75,12 @@ class InventoryAggregate(AggregateRoot):
         self.inventory.update_available_quantity(amount=event.available_quantity)
 
     def apply(self, events: deque[Event]):
+        """
+        Apply events on aggregate, it's noticeable that an aggregate can accept multiple events at the save time and apply them
+        to current state of aggregate instance.
+        :param events:
+        :return:
+        """
         for event in events:
             if event.event_type not in InventoryEventType:
                 raise InvalidRelatedEventType(event_type=event.event_type, aggregate=InventoryAggregate)
