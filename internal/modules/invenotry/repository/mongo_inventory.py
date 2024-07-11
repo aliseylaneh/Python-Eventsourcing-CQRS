@@ -13,12 +13,10 @@ class InventoryMongoRepository(IInventoryRepository):
         events = deque(event.__dict__ for event in events)
         self._collection.insert_many(events)
 
-    def find_by_sku(self, sku: str) -> Inventory:
-        projector = MongoProjection()
-        inventory = Inventory()
+    def find_by_sku(self, sku: str) -> Inventory | None:
+        events_sequence = self._collection.find({'sku': sku})
+        inventory = MongoProjection().recreate_state(sku=sku, events=events_sequence)
         if not inventory.sku == sku:
-            # TODO
-            projector.recreate_state()
             raise InventoryDoesNotExists()
         return inventory
 

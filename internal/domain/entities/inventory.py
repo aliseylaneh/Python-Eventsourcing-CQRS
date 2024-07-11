@@ -11,8 +11,8 @@ class Inventory:
     available_quantity: int = field(default=0)
     reserved: int = field(default=0)
 
-    def decrease_available_quantity(self, amount: int):
-        self.available_quantity -= amount
+    def update_available_quantity(self, amount: int):
+        self.available_quantity += amount
 
     def increase_reserved(self, amount: int):
         if self.soh <= 0:

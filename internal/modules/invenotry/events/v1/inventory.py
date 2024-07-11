@@ -49,4 +49,5 @@ class InventoryCreatedEvent(Event):
     sku: uuid = field(default='')
     soh: int = field(default=0)
     available_quantity: int = field(default=0)
+    reserved: int = 0
     event_type: InventoryEventType = InventoryEventType.INVENTORY_CREATED

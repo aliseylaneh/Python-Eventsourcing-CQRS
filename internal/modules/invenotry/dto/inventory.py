@@ -23,7 +23,7 @@ class CreateInventory(BaseModel):
     available_quantity: int
 
 
-class CreateInventoryResponse(BaseModel):
+class InventoryResponse(BaseModel):
     sku: str
     soh: int
     reserved: int
