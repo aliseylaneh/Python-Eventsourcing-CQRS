@@ -1,9 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 
-from internal.domain.entities.inventory import Inventory
-from ...commands.inventory import ReserveStockCommand, CreateInventoryCommand
-from ...dependencies.inventory import get_reserve_stock_command, get_create_inventory_command
-from ...dto.inventory import InventoryReserveStock, CreateInventory, InventoryResponse
+from ...commands.inventory import CreateInventoryCommand, ReserveStockCommand
+from ...dependencies.inventory import get_create_inventory_command, get_reserve_stock_command
+from ...dto.inventory import CreateInventory, InventoryReserveStock, InventoryResponse
 
 router = APIRouter()
 
@@ -19,7 +18,7 @@ def reserve(reserve_stock: InventoryReserveStock,
                                      available_quantity=inventory.available_quantity)
         return response
     except Exception as exception:
-        raise HTTPException(status_code=400, detail=exception.args)
+        raise HTTPException(status_code=400, detail=str(exception))
 
 
 @router.post("/inventory")
@@ -33,4 +32,4 @@ def create(inventory: CreateInventory,
                                      available_quantity=inventory.available_quantity)
         return response
     except Exception as exception:
-        raise HTTPException(status_code=400, detail=exception.args)
+        raise HTTPException(status_code=400, detail=str(exception))

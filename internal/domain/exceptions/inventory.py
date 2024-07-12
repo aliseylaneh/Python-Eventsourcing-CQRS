@@ -1,10 +1,8 @@
 from enum import Enum
-from typing import Type
 
 
 class QuantityError(Exception):
-    def __init__(self):
-        super(QuantityError, self).__init__('Quantity must not be less than or equal to zero')
+    pass
 
 
 class OutOfStock(Exception):
@@ -22,5 +20,5 @@ class InvalidRelatedEventType(Exception):
 
 
 class InventoryDoesNotExists(Exception):
-    def __init__(self):
+    def __init__(self, *args, **kwargs):
         super(InventoryDoesNotExists, self).__init__("Inventory does not exists")

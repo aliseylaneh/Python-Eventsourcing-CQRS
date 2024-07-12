@@ -1,17 +1,12 @@
-from typing import Any
-
 from internal.domain.entities.inventory import Inventory
-from internal.domain.events.base import Event
 from internal.domain.interfaces.repositories.iinventory_projection import IInventoryProjection
-from internal.modules.invenotry.events.v1.inventory import InventoryEventType, ReserveQuantityIncreasedEvent, \
-    AvailableQuantityDecreasedEvent
+from internal.modules.invenotry.events.v1.inventory import InventoryEventType
 
 
 class MongoProjection(IInventoryProjection):
 
-    def recreate_state(self, events: list[dict], sku: str) -> Inventory:
-        # TODO logic is working but must be refactored
-        inventory: Inventory = Inventory(sku=sku)
+    def recreate_state(self, events: list[dict], sku: str) -> Inventory | None:
+        inventory: Inventory = Inventory(sku='')
         for event in events:
             match event['event_type']:
                 case InventoryEventType.INVENTORY_CREATED:
@@ -23,5 +18,6 @@ class MongoProjection(IInventoryProjection):
                     inventory.increase_reserved(int(event['reserved']))
                 case InventoryEventType.AVAILABLE_QUANTITY_DECREASED:
                     inventory.update_available_quantity(amount=int(event['available_quantity']))
-
+        if inventory.sku == '':
+            return None
         return inventory

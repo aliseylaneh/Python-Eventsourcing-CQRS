@@ -16,8 +16,6 @@ class InventoryMongoRepository(IInventoryRepository):
     def find_by_sku(self, sku: str) -> Inventory | None:
         events_sequence = self._collection.find({'sku': sku})
         inventory = MongoProjection().recreate_state(sku=sku, events=events_sequence)
-        if not inventory.sku == sku:
-            raise InventoryDoesNotExists()
         return inventory
 
     def find_by_id(self, pk: uuid) -> Inventory:
