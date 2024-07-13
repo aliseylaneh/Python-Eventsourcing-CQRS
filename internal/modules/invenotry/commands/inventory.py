@@ -23,5 +23,5 @@ class CreateInventoryCommand(BaseCommand):
 
 
 class UpdateInventoryCommand(BaseCommand):
-    def execute(self, soh: int, available_quantity: int) -> Any:
+    def execute(self, sku: str, soh: int, available_quantity: int) -> Any:
         pass

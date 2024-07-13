@@ -1,23 +1,21 @@
-from pydantic import BaseModel, validator
-
-from internal.domain.exceptions.inventory import QuantityError
+from pydantic import BaseModel, PositiveInt
 
 
 class InventoryReserveStock(BaseModel):
     sku: str
-    quantity: int
-
-    @validator('quantity', )
-    def non_zero_negative(cls, v):
-        if v <= 0:
-            raise QuantityError('Quantity must not be less than or equal to zero')
-        return v
+    quantity: PositiveInt
 
 
 class CreateInventory(BaseModel):
     sku: str
-    soh: int
-    available_quantity: int
+    soh: PositiveInt
+    available_quantity: PositiveInt
+
+
+class UpdateInventory(BaseModel):
+    sku: str
+    soh: PositiveInt
+    available_quantity: PositiveInt
 
 
 class InventoryResponse(BaseModel):

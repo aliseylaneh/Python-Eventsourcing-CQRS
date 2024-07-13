@@ -6,7 +6,8 @@ class QuantityError(Exception):
 
 
 class OutOfStock(Exception):
-    pass
+    def __init__(self, *args, **kwargs):
+        super(OutOfStock, self).__init__("Out of stock!!.")
 
 
 class NotAvailable(Exception):
@@ -16,14 +17,14 @@ class NotAvailable(Exception):
 class InvalidRelatedEventType(Exception):
 
     def __init__(self, event_type: Enum, aggregate):
-        super(InvalidRelatedEventType, self).__init__(f"Event type {event_type} isn't related to aggregate {aggregate.__class__}")
+        super(InvalidRelatedEventType, self).__init__(f"Event type {event_type} isn't related to aggregate {aggregate.__class__}.")
 
 
 class InventoryDoesNotExists(Exception):
     def __init__(self, *args, **kwargs):
-        super(InventoryDoesNotExists, self).__init__("Inventory does not exists")
+        super(InventoryDoesNotExists, self).__init__("Inventory does not exists!!")
 
 
 class InventoryAlreadyExists(Exception):
     def __init__(self, *args, **kwargs):
-        super(InventoryAlreadyExists, self).__init__("Inventory exists")
+        super(InventoryAlreadyExists, self).__init__("Inventory exists!!")

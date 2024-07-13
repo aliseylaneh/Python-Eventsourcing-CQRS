@@ -52,7 +52,6 @@ class InventoryAggregate(AggregateRoot):
             raise InventoryAlreadyExists()
         inventory = Inventory(sku=event.sku, soh=event.soh, available_quantity=event.available_quantity, reserved=0)
         self.inventory = inventory
-        self.repository.create(event=event)
 
     def _on_reserve_stock(self, event: Event | ReserveQuantityIncreasedEvent):
         """
