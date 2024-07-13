@@ -22,3 +22,8 @@ class InvalidRelatedEventType(Exception):
 class InventoryDoesNotExists(Exception):
     def __init__(self, *args, **kwargs):
         super(InventoryDoesNotExists, self).__init__("Inventory does not exists")
+
+
+class InventoryAlreadyExists(Exception):
+    def __init__(self, *args, **kwargs):
+        super(InventoryAlreadyExists, self).__init__("Inventory exists")

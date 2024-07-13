@@ -11,11 +11,15 @@ class IInventoryRepository(ABC):
         self._collection = collection
 
     @abstractmethod
+    def create(self, event: Event):
+        raise NotImplementedError
+
+    @abstractmethod
     def bulk_insert(self, events: deque[Event]):
         raise NotImplementedError
 
     @abstractmethod
-    def find_by_sku(self, sku: str) -> Inventory:
+    def find_by_sku(self, sku: str) -> Inventory | None:
         raise NotImplementedError
 
     @abstractmethod

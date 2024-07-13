@@ -1,7 +1,7 @@
 from collections import deque
+from typing import Any
 
-from ..dto.inventory import InventoryResponse
-from ..events.v1.inventory import ReserveQuantityIncreasedEvent, InventoryCreatedEvent
+from ..events.v1.inventory import InventoryCreatedEvent, ReserveQuantityIncreasedEvent
 from ....domain.commands.commands import BaseCommand
 from ....domain.entities.inventory import Inventory
 
@@ -20,3 +20,8 @@ class CreateInventoryCommand(BaseCommand):
             event = InventoryCreatedEvent(sku=sku, soh=soh, available_quantity=available_quantity)
             self.aggregate.apply(events=deque([event]))
         return self.aggregate.inventory
+
+
+class UpdateInventoryCommand(BaseCommand):
+    def execute(self, soh: int, available_quantity: int) -> Any:
+        pass
