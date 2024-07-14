@@ -11,6 +11,14 @@ class Inventory:
     available_quantity: int = field(default=0)
     reserved: int = field(default=0)
 
+    def set_soh(self, soh: int):
+        if soh >= 0:
+            self.soh = soh
+
+    def set_available_quantity(self, available_quantity: int):
+        if available_quantity >= 0:
+            self.available_quantity = available_quantity
+
     def update_available_quantity(self, amount: int):
         self.available_quantity += amount
 

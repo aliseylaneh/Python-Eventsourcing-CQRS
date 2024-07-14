@@ -2,7 +2,6 @@ from pydantic import BaseModel, PositiveInt
 
 
 class InventoryReserveStock(BaseModel):
-    sku: str
     quantity: PositiveInt
 
 
@@ -13,7 +12,6 @@ class CreateInventory(BaseModel):
 
 
 class UpdateInventory(BaseModel):
-    sku: str
     soh: PositiveInt
     available_quantity: PositiveInt
 

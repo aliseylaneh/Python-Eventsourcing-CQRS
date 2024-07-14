@@ -11,7 +11,7 @@ from internal.modules.invenotry.repository.mongo_projection import MongoProjecti
 
 class InventoryMongoRepository(IInventoryRepository):
 
-    def bulk_insert(self, events: deque[Event]):
+    def insert(self, events: deque[Event]):
         events = deque(event.__dict__ for event in events)
         self._collection.insert_many(events)
 

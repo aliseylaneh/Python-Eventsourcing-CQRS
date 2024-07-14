@@ -1,7 +1,8 @@
 from collections import deque
 from typing import Any
 
-from ..events.v1.inventory import InventoryCreatedEvent, ReserveQuantityIncreasedEvent
+from ..events.v1.inventory import InventoryCreatedEvent, ReserveQuantityIncreasedEvent, SOHReplacedEvent, \
+    AvailableQuantityReplacedEvent
 from ....domain.commands.commands import BaseCommand
 from ....domain.entities.inventory import Inventory
 
@@ -23,5 +24,9 @@ class CreateInventoryCommand(BaseCommand):
 
 
 class UpdateInventoryCommand(BaseCommand):
-    def execute(self, sku: str, soh: int, available_quantity: int) -> Any:
-        pass
+    def execute(self, sku: str, soh: int, available_quantity: int) -> Inventory:
+        with self.aggregate:
+            replace_soh_event = SOHReplacedEvent(sku=sku, soh=soh)
+            replace_available_quantity_event = AvailableQuantityReplacedEvent(sku=sku, available_quantity=available_quantity)
+            self.aggregate.apply(events=deque([replace_soh_event, replace_available_quantity_event]))
+        return self.aggregate.inventory

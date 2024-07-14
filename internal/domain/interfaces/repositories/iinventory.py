@@ -11,7 +11,7 @@ class IInventoryRepository(ABC):
         self._collection = collection
 
     @abstractmethod
-    def bulk_insert(self, events: deque[Event]):
+    def insert(self, events: deque[Event]):
         raise NotImplementedError
 
     @abstractmethod

@@ -5,8 +5,9 @@ from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
 from internal.domain.exceptions.inventory import InvalidRelatedEventType, InventoryAlreadyExists, InventoryDoesNotExists
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
-from internal.modules.invenotry.events.v1.inventory import AvailableQuantityDecreasedEvent, InventoryCreatedEvent, InventoryEventType, \
-    ReserveQuantityIncreasedEvent
+from internal.modules.invenotry.events.v1.inventory import AvailableQuantityDecreasedEvent, InventoryCreatedEvent, \
+    InventoryEventType, \
+    ReserveQuantityIncreasedEvent, AvailableQuantityReplacedEvent, SOHReplacedEvent, BaseInventoryDetailEvent
 
 
 class InventoryAggregate(AggregateRoot):
@@ -14,12 +15,14 @@ class InventoryAggregate(AggregateRoot):
         super(InventoryAggregate, self).__init__(repository=repository)
         self.inventory = None
 
-    def _when(self, event: Event):
+    def _when(self, event: Event | BaseInventoryDetailEvent):
         """
         This function will call the specific logic handler depending on the event type of the Event
         :param event:
         :return:
         """
+        if not self.inventory:
+            self._construct_inventory(sku=event.sku)
         match event.event_type:
             case InventoryEventType.STOCK_RESERVED:
                 self._on_reserve_stock(event=event)
@@ -27,12 +30,16 @@ class InventoryAggregate(AggregateRoot):
                 self._on_decrease_available_quantity(event=event)
             case InventoryEventType.INVENTORY_CREATED:
                 self._on_create_inventory(event=event)
+            case InventoryEventType.SOH_REPLACED:
+                self._on_replace_soh(event=event)
+            case InventoryEventType.AVAILABLE_QUANTITY_REPLACED:
+                self._on_replace_available_quantity(event=event)
 
     def _construct_inventory(self, sku: str):
         """
-        Constructing inventory is necessarily for inventory aggregate, so before applying event logics current state of aggregate
-        instance must be recreated. This function will call repository to get the inventory for specific sku, and it fulfils the
-        purpose of reconstructing the instance current state.
+        Constructing inventory is necessarily for inventory aggregate, so before applying event logics current state
+        of aggregate instance must be recreated. This function will call repository to get the inventory for specific
+        sku, and it fulfils the purpose of reconstructing the instance current state.
         :param sku:
         :return:
         """
@@ -41,17 +48,32 @@ class InventoryAggregate(AggregateRoot):
 
     def _on_create_inventory(self, event: Event | InventoryCreatedEvent):
         """
-        Creates Inventory and if it exists, try to reconstruct the latest state of inventory then triggers below events:
-        1- IncreasedSohQuantityEvent
-        2- IncreasedAvailableQuantityEvent
+        Creates Inventory and if it exists, try to reconstruct the latest state of the inventory
         :param event:
         :return:
         """
-        self._construct_inventory(sku=event.sku)
+
         if self.inventory:
             raise InventoryAlreadyExists()
         inventory = Inventory(sku=event.sku, soh=event.soh, available_quantity=event.available_quantity, reserved=0)
         self.inventory = inventory
+
+    def _on_replace_soh(self, event: Event | SOHReplacedEvent):
+        """
+        Updating and replacing the inventory soh with new value.
+        :param event:
+        :return:
+        """
+
+        self.inventory.set_soh(soh=event.soh)
+
+    def _on_replace_available_quantity(self, event: Event | AvailableQuantityReplacedEvent):
+        """
+        Updating and replacing the inventory available quantity with new value.
+        :param event:
+        :return:
+        """
+        self.inventory.set_available_quantity(available_quantity=event.available_quantity)
 
     def _on_reserve_stock(self, event: Event | ReserveQuantityIncreasedEvent):
         """
@@ -62,7 +84,7 @@ class InventoryAggregate(AggregateRoot):
         :param event:
         :return:
         """
-        self._construct_inventory(sku=event.sku)
+
         if not self.inventory:
             raise InventoryDoesNotExists()
         self.inventory.increase_reserved(amount=event.reserved)
@@ -75,7 +97,7 @@ class InventoryAggregate(AggregateRoot):
         :param event:
         :return:
         """
-        self._construct_inventory(sku=event.sku)
+
         if not self.inventory:
             raise InventoryDoesNotExists()
         self.inventory.update_available_quantity(amount=event.available_quantity)

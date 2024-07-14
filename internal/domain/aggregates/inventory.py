@@ -24,7 +24,7 @@ class AggregateRoot(ABC):
             raise exc_type(exc_val, exc_tb)
 
     def commit(self):
-        self.repository.bulk_insert(events=self.events)
+        self.repository.insert(events=self.events)
 
     def _apply(self, event):
         self._when(event=event)
