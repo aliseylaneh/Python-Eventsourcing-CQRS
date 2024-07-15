@@ -29,7 +29,6 @@ services:
     links:
       - mongo
 
-
 volumes:
   mongo-data:
   mongo-express-data:
