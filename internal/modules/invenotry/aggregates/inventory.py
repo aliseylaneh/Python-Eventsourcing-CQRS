@@ -5,9 +5,9 @@ from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
 from internal.domain.exceptions.inventory import InvalidRelatedEventType, InventoryAlreadyExists, InventoryDoesNotExists
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
-from internal.modules.invenotry.events.v1.inventory import AvailableQuantityDecreasedEvent, InventoryCreatedEvent, \
-    InventoryEventType, \
-    ReserveQuantityIncreasedEvent, AvailableQuantityReplacedEvent, SOHReplacedEvent, BaseInventoryDetailEvent
+from internal.modules.invenotry.events.v1.inventory import AvailableQuantityDecreasedEvent, AvailableQuantityReplacedEvent, \
+    BaseInventoryDetailEvent, InventoryCreatedEvent, InventoryEventType, ReserveQuantityIncreasedEvent, SOHReplacedEvent
+from internal.es.services.mongo_projection import MongoDBInventoryUtility
 
 
 class InventoryAggregate(AggregateRoot):
@@ -44,7 +44,7 @@ class InventoryAggregate(AggregateRoot):
         :return:
         """
         if not self.inventory:
-            self.inventory = self.repository.find_by_sku(sku=sku)
+            self.inventory = MongoDBInventoryUtility.recreate_state(repository=self.repository, sku=sku)
 
     def _on_create_inventory(self, event: Event | InventoryCreatedEvent):
         """

@@ -1,6 +1,6 @@
-from enum import Enum
 import uuid
 from dataclasses import dataclass, field
+from enum import Enum
 
 from .....domain.events.base import Event
 
@@ -50,7 +50,7 @@ class AvailableQuantityDecreasedEvent(BaseInventoryDetailEvent):
 # CRUD EVENTS
 @dataclass
 class InventoryCreatedEvent(Event):
-    sku: uuid = field(default='')
+    sku: str = field(default='')
     soh: int = field(default=0)
     available_quantity: int = field(default=0)
     reserved: int = 0
