@@ -4,7 +4,8 @@ from adapter.mongo import mongo_db_connection
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
 from internal.modules.invenotry.aggregates.inventory import InventoryAggregate
 from internal.modules.invenotry.commands.inventory import CreateInventoryCommand, ReserveStockCommand, UpdateInventoryCommand
-from internal.modules.invenotry.repository.mongo_inventory import InventoryMongoRepository
+from internal.modules.invenotry.queries.inventory import GetInventoryQuery
+from internal.modules.invenotry.repositories.mongo_inventory import InventoryMongoRepository
 
 
 def get_inventory_collection():
@@ -29,3 +30,7 @@ def get_create_inventory_command(aggregate=Depends(inventory_aggregate)) -> Crea
 
 def get_update_inventory_command(aggregate=Depends(inventory_aggregate)) -> UpdateInventoryCommand:
     return UpdateInventoryCommand(aggregate=aggregate)
+
+
+def get_inventory_query(repository=Depends(inventory_repository)) -> GetInventoryQuery:
+    return GetInventoryQuery(repository=repository)

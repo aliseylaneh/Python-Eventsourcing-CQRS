@@ -1,8 +1,7 @@
 from collections import deque
-from typing import Any
 
-from ..events.v1.inventory import InventoryCreatedEvent, ReserveQuantityIncreasedEvent, SOHReplacedEvent, \
-    AvailableQuantityReplacedEvent
+from ..events.v1.inventory import AvailableQuantityReplacedEvent, InventoryCreatedEvent, ReserveQuantityIncreasedEvent, \
+    SOHReplacedEvent
 from ....domain.commands.commands import BaseCommand
 from ....domain.entities.inventory import Inventory
 

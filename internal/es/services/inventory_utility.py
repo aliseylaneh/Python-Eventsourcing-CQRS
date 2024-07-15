@@ -20,6 +20,10 @@ class MongoDBInventoryUtility(IEventSourcingUtility):
                     inventory.increase_reserved(int(event.get('reserved')))
                 case InventoryEventType.AVAILABLE_QUANTITY_DECREASED:
                     inventory.update_available_quantity(amount=int(event.get('available_quantity')))
+                case InventoryEventType.AVAILABLE_QUANTITY_REPLACED:
+                    inventory.set_available_quantity(available_quantity=int(event.get('available_quantity')))
+                case InventoryEventType.SOH_REPLACED:
+                    inventory.set_soh(soh=int(event.get('soh')))
         if inventory.sku == '':
             return None
         return inventory

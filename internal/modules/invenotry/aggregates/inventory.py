@@ -5,9 +5,9 @@ from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
 from internal.domain.exceptions.inventory import InvalidRelatedEventType, InventoryAlreadyExists, InventoryDoesNotExists
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
+from internal.es.services.inventory_utility import MongoDBInventoryUtility
 from internal.modules.invenotry.events.v1.inventory import AvailableQuantityDecreasedEvent, AvailableQuantityReplacedEvent, \
     BaseInventoryDetailEvent, InventoryCreatedEvent, InventoryEventType, ReserveQuantityIncreasedEvent, SOHReplacedEvent
-from internal.es.services.mongo_projection import MongoDBInventoryUtility
 
 
 class InventoryAggregate(AggregateRoot):
@@ -38,7 +38,7 @@ class InventoryAggregate(AggregateRoot):
     def _construct_inventory(self, sku: str):
         """
         Constructing inventory is necessarily for inventory aggregate, so before applying event logics current state
-        of aggregate instance must be recreated. This function will call repository to get the inventory for specific
+        of aggregate instance must be recreated. This function will call repositories to get the inventory for specific
         sku, and it fulfils the purpose of reconstructing the instance current state.
         :param sku:
         :return:
@@ -64,7 +64,8 @@ class InventoryAggregate(AggregateRoot):
         :param event:
         :return:
         """
-
+        if not self.inventory:
+            raise InventoryDoesNotExists()
         self.inventory.set_soh(soh=event.soh)
 
     def _on_replace_available_quantity(self, event: Event | AvailableQuantityReplacedEvent):
@@ -73,6 +74,8 @@ class InventoryAggregate(AggregateRoot):
         :param event:
         :return:
         """
+        if not self.inventory:
+            raise InventoryDoesNotExists()
         self.inventory.set_available_quantity(available_quantity=event.available_quantity)
 
     def _on_reserve_stock(self, event: Event | ReserveQuantityIncreasedEvent):

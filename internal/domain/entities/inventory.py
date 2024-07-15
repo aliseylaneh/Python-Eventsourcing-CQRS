@@ -1,7 +1,6 @@
-import uuid
 from dataclasses import dataclass, field
 
-from internal.domain.exceptions.inventory import OutOfStock
+from internal.domain.exceptions.inventory import AvailableQuantityError, OutOfStock, ReservedStockInProcess
 
 
 @dataclass
@@ -12,10 +11,14 @@ class Inventory:
     reserved: int = field(default=0)
 
     def set_soh(self, soh: int):
+        if self.reserved >= soh:
+            raise ReservedStockInProcess()
         if soh >= 0:
             self.soh = soh
 
     def set_available_quantity(self, available_quantity: int):
+        if self.soh < available_quantity:
+            raise AvailableQuantityError()
         if available_quantity >= 0:
             self.available_quantity = available_quantity
 

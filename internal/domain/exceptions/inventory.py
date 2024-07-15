@@ -10,10 +10,6 @@ class OutOfStock(Exception):
         super(OutOfStock, self).__init__("Out of stock!!.")
 
 
-class NotAvailable(Exception):
-    pass
-
-
 class InvalidRelatedEventType(Exception):
 
     def __init__(self, event_type: Enum, aggregate):
@@ -28,3 +24,13 @@ class InventoryDoesNotExists(Exception):
 class InventoryAlreadyExists(Exception):
     def __init__(self, *args, **kwargs):
         super(InventoryAlreadyExists, self).__init__("Inventory exists!!")
+
+
+class AvailableQuantityError(Exception):
+    def __init__(self, *args, **kwargs):
+        super(AvailableQuantityError, self).__init__("Available Quantity is more than soh.")
+
+
+class ReservedStockInProcess(Exception):
+    def __init__(self, *args, **kwargs):
+        super(ReservedStockInProcess, self).__init__("Update is unavailable due to reserved stock.")
