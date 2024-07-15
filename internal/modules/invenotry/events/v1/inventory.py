@@ -9,6 +9,9 @@ class InventoryEventType(str, Enum):
     # OPERATIONAL
     STOCK_RESERVED = 'STOCK_RESERVED'
     AVAILABLE_QUANTITY_DECREASED = 'AVAILABLE_QUANTITY_DECREASED'
+    PROCESSED_RESERVED_SOH_DECREASED = 'PROCESSED_RESERVED_SOH_DECREASED'
+    PROCESSED_RESERVED_DECREASED = 'PROCESSED_RESERVED_DECREASED'
+
     # CRUD
     SOH_REPLACED = 'SOH_REPLACED'
     AVAILABLE_QUANTITY_REPLACED = 'AVAILABLE_QUANTITY_REPLACED'
@@ -27,21 +30,30 @@ class BaseInventorySOHEvent(Event):
 
 
 @dataclass
-class QuantityEvent(BaseInventoryDetailEvent):
-    quantity: int = field(default=0)
+class BaseReservedEvent(BaseInventoryDetailEvent):
+    reserved: int = field(default=0)
 
 
 # OPERATIONAL EVENTS
 @dataclass
-class ReserveQuantityIncreasedEvent(BaseInventoryDetailEvent):
+class ReserveQuantityIncreasedEvent(BaseReservedEvent):
     event_type: InventoryEventType = InventoryEventType.STOCK_RESERVED
-    reserved: int = field(default=0)
 
 
 @dataclass
 class AvailableQuantityDecreasedEvent(BaseInventoryDetailEvent):
     event_type: InventoryEventType = InventoryEventType.AVAILABLE_QUANTITY_DECREASED
     available_quantity: int = field(default=0)
+
+
+@dataclass
+class ProcessedReservedDecreasedEvent(BaseReservedEvent):
+    event_type: InventoryEventType = InventoryEventType.PROCESSED_RESERVED_DECREASED
+
+
+@dataclass
+class ProcessedReservedSOHDecreasedEvent(BaseInventoryDetailEvent, BaseInventorySOHEvent):
+    event_type: InventoryEventType = InventoryEventType.PROCESSED_RESERVED_SOH_DECREASED
 
 
 # CRUD EVENTS
@@ -55,8 +67,7 @@ class InventoryCreatedEvent(Event):
 
 
 @dataclass
-class SOHReplacedEvent(BaseInventoryDetailEvent):
-    soh: int = field(default=0)
+class SOHReplacedEvent(BaseInventoryDetailEvent, BaseInventorySOHEvent):
     event_type: InventoryEventType = InventoryEventType.SOH_REPLACED
 
 

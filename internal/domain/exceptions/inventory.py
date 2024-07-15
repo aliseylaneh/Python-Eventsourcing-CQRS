@@ -34,3 +34,20 @@ class AvailableQuantityError(Exception):
 class ReservedStockInProcess(Exception):
     def __init__(self, *args, **kwargs):
         super(ReservedStockInProcess, self).__init__("Update is unavailable due to reserved stock.")
+
+
+class InvalidReservedAmount(Exception):
+    def __init__(self, *args, **kwargs):
+        super(InvalidReservedAmount, self).__init__("Amount is more than reserved quantity.")
+
+
+class InvalidAvailableQuantityUpdate(Exception):
+    def __init__(self, *args, **kwargs):
+        super(InvalidAvailableQuantityUpdate, self).__init__(
+            "Available quantity update is not available due to zero or negative value.")
+
+
+class InvalidSOHUpdate(Exception):
+    def __init__(self, *args, **kwargs):
+        super(InvalidSOHUpdate, self).__init__(
+            "SOH update is not available due to zero or negative value.")

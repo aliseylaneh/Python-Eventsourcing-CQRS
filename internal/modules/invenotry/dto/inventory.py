@@ -5,6 +5,10 @@ class InventoryReserveStock(BaseModel):
     quantity: PositiveInt
 
 
+class CompleteReservedStock(BaseModel):
+    quantity: PositiveInt
+
+
 class CreateInventory(BaseModel):
     sku: str
     soh: PositiveInt

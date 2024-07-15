@@ -1,6 +1,8 @@
 from dataclasses import dataclass, field
 
-from internal.domain.exceptions.inventory import AvailableQuantityError, OutOfStock, ReservedStockInProcess
+from internal.domain.exceptions.inventory import AvailableQuantityError, InvalidAvailableQuantityUpdate, InvalidReservedAmount, \
+    InvalidSOHUpdate, OutOfStock, \
+    ReservedStockInProcess
 
 
 @dataclass
@@ -22,7 +24,25 @@ class Inventory:
         if available_quantity >= 0:
             self.available_quantity = available_quantity
 
+    def decrease_reserved(self, amount: int):
+        if self.reserved < amount:
+            raise InvalidReservedAmount()
+        self.reserved -= amount
+
+    def update_soh(self, amount: int):
+        """
+        Updating soh can be done with positive and negative values.
+        """
+        if self.soh <= 0:
+            raise InvalidSOHUpdate()
+        self.soh += amount
+
     def update_available_quantity(self, amount: int):
+        """
+        Updating available quantity can be done with positive and negative values.
+        """
+        if self.available_quantity <= 0:
+            raise InvalidAvailableQuantityUpdate()
         self.available_quantity += amount
 
     def increase_reserved(self, amount: int):

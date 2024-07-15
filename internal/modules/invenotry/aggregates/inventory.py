@@ -7,7 +7,8 @@ from internal.domain.exceptions.inventory import InvalidRelatedEventType, Invent
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
 from internal.es.services.inventory_utility import MongoDBInventoryUtility
 from internal.modules.invenotry.events.v1.inventory import AvailableQuantityDecreasedEvent, AvailableQuantityReplacedEvent, \
-    BaseInventoryDetailEvent, InventoryCreatedEvent, InventoryEventType, ReserveQuantityIncreasedEvent, SOHReplacedEvent
+    BaseInventoryDetailEvent, InventoryCreatedEvent, InventoryEventType, ProcessedReservedDecreasedEvent, \
+    ProcessedReservedSOHDecreasedEvent, ReserveQuantityIncreasedEvent, SOHReplacedEvent
 
 
 class InventoryAggregate(AggregateRoot):
@@ -34,6 +35,10 @@ class InventoryAggregate(AggregateRoot):
                 self._on_replace_soh(event=event)
             case InventoryEventType.AVAILABLE_QUANTITY_REPLACED:
                 self._on_replace_available_quantity(event=event)
+            case InventoryEventType.PROCESSED_RESERVED_DECREASED:
+                self._on_decrease_reserved(event=event)
+            case InventoryEventType.PROCESSED_RESERVED_SOH_DECREASED:
+                self._on_decrease_soh(event=event)
 
     def _construct_inventory(self, sku: str):
         """
@@ -91,7 +96,18 @@ class InventoryAggregate(AggregateRoot):
         if not self.inventory:
             raise InventoryDoesNotExists()
         self.inventory.increase_reserved(amount=event.reserved)
-        self.apply(events=deque([AvailableQuantityDecreasedEvent(available_quantity=-event.reserved, sku=event.sku)]))
+        self.apply(events=deque([AvailableQuantityDecreasedEvent(sku=event.sku, available_quantity=-event.reserved)]))
+
+    def _on_decrease_reserved(self, event: Event | ProcessedReservedDecreasedEvent):
+        if not self.inventory:
+            raise InventoryDoesNotExists()
+        self.inventory.decrease_reserved(amount=event.reserved)
+        self.apply(events=deque([ProcessedReservedSOHDecreasedEvent(sku=event.sku, soh=-event.reserved)]))
+
+    def _on_decrease_soh(self, event: Event | ProcessedReservedSOHDecreasedEvent):
+        if not self.inventory:
+            raise InventoryDoesNotExists()
+        self.inventory.update_soh(amount=event.soh)
 
     def _on_decrease_available_quantity(self, event: Event | AvailableQuantityDecreasedEvent):
         """
