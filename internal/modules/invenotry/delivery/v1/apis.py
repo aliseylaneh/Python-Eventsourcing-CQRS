@@ -1,4 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
+from opentelemetry import trace
+from opentelemetry.sdk.trace import TracerProvider
+from opentelemetry.sdk.trace.export import (
+    BatchSpanProcessor,
+    ConsoleSpanExporter
+)
 
 from internal.domain.entities.types.inventory import SKU
 from ...commands.inventory import CompleteReservedCommand
@@ -11,6 +17,12 @@ from ...dto.inventory import CreateInventory, InventoryReserveStock, InventoryRe
 from ...queries.inventory import GetInventoryQuery
 
 router = APIRouter()
+provider = TracerProvider()
+processor = BatchSpanProcessor(ConsoleSpanExporter())
+provider.add_span_processor(processor)
+
+trace.set_tracer_provider(provider)
+tracer = trace.get_tracer("tracer.inventory")
 
 
 @router.patch("/inventory/{sku}/reserve")
@@ -84,12 +96,13 @@ def update(sku: SKU, inventory: UpdateInventory,
 
 @router.get("/inventory/{sku}")
 def get(sku: SKU, use_case: GetInventoryQuery = Depends(get_inventory_query)) -> InventoryResponse:
-    try:
-        inventory = use_case.execute(sku=sku)
-        response = InventoryResponse(sku=inventory.sku,
-                                     soh=inventory.soh,
-                                     reserved=inventory.reserved,
-                                     available_quantity=inventory.available_quantity)
-        return response
-    except Exception as exception:
-        raise HTTPException(status_code=400, detail=str(exception))
+    with tracer.start_as_current_span('get-inventory-api') as span:
+        try:
+            inventory = use_case.execute(sku=sku)
+            response = InventoryResponse(sku=inventory.sku,
+                                         soh=inventory.soh,
+                                         reserved=inventory.reserved,
+                                         available_quantity=inventory.available_quantity)
+            return response
+        except Exception as exception:
+            raise HTTPException(status_code=400, detail=str(exception))
