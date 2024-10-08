@@ -7,5 +7,5 @@ from internal.modules.invenotry.delivery.v1.apis import router as inventory_rout
 
 app = FastAPI()
 RequestsInstrumentor().instrument()
-FastAPIInstrumentor().instrument_app(app=app)
+FastAPIInstrumentor().instrument_app(app=app, excluded_urls="/docs,/openapi.json,/")
 app.include_router(inventory_router)

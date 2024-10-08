@@ -1,23 +1,23 @@
 version: "3.9"
 
 services:
-  app:
-    restart: always
-    build:
-      context: .
-      dockerfile: docker/local.Dockerfile
-    image: inventory-app:latest
-    container_name: inventory-app
-    entrypoint: [ "/bin/bash","-c" ]
-    command:
-      |
-      uvicorn main:app
-    depends_on:
-      - mongo
-      - mongo-express
-      - jaeger
-    ports:
-      - "8000:8000"
+  #  app:
+  #    restart: always
+  #    build:
+  #      context: .
+  #      dockerfile: docker/local.Dockerfile
+  #    image: inventory-app:latest
+  #    container_name: inventory-app
+  #    entrypoint: [ "/bin/bash","-c" ]
+  #    command:
+  #      |
+  #      uvicorn main:app
+  #    depends_on:
+  #      - mongo
+  #      - mongo-express
+  #      - jaeger
+  #    ports:
+  #      - "8000:8000"
 
   mongo:
     image: mongo:latest
@@ -30,6 +30,8 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+    networks:
+      - app_inventory
 
   mongo-express:
     image: mongo-express:latest
@@ -45,10 +47,13 @@ services:
       ME_CONFIG_MONGODB_ADMINPASSWORD: 1234
     links:
       - mongo
+    networks:
+      - app_inventory
     depends_on:
       - mongo
 
   jaeger:
+    restart: always
     image: jaegertracing/all-in-one:latest
     ports:
       - "16686:16686"
@@ -59,7 +64,38 @@ services:
     environment:
       - LOG_LEVEL=debug
       - COLLECTOR_OTLP_ENABLED=true
+      - SPAN_STORAGE_TYPE=elasticsearch
+      - "ES_SERVER_URLS=http://elasticsearch:9200"
+    networks:
+      - app_inventory
+    depends_on:
+      - elasticsearch
+
+  elasticsearch:
+    restart: always
+    image: elasticsearch:8.13.0
+    container_name: inventory-elasticsearch
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    environment:
+      - "ES_JAVA_OPTS=-Xms1024m -Xmx1024m"
+      - discovery.type=single-node
+      - TimeOutStartSec = 600
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    networks:
+      - app_inventory
 
 volumes:
   mongo-data:
   mongo-express-data:
+  esdata:
+    driver: local
+
+
+networks:
+  app_inventory:
+    driver: bridge

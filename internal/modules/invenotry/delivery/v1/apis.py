@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException
+from opentelemetry import trace
 
 from config.otel import tracer
 from internal.domain.entities.types.inventory import SKU
