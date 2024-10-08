@@ -1,11 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
-from opentelemetry import trace
-from opentelemetry.sdk.trace import TracerProvider
-from opentelemetry.sdk.trace.export import (
-    BatchSpanProcessor,
-    ConsoleSpanExporter
-)
 
+from config.otel import tracer
 from internal.domain.entities.types.inventory import SKU
 from ...commands.inventory import CompleteReservedCommand
 from ...commands.inventory import CreateInventoryCommand, ReserveStockCommand, UpdateInventoryCommand
@@ -17,12 +12,6 @@ from ...dto.inventory import CreateInventory, InventoryReserveStock, InventoryRe
 from ...queries.inventory import GetInventoryQuery
 
 router = APIRouter()
-provider = TracerProvider()
-processor = BatchSpanProcessor(ConsoleSpanExporter())
-provider.add_span_processor(processor)
-
-trace.set_tracer_provider(provider)
-tracer = trace.get_tracer("tracer.inventory")
 
 
 @router.patch("/inventory/{sku}/reserve")
