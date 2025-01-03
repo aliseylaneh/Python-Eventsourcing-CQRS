@@ -1,4 +1,4 @@
-# aliseylaneh-Python-Eventsourcing-CQRS
+Python-Eventsourcing-CQRS
 
 This project is a Python-based implementation of **Domain-Driven Design (DDD)**, **Event Sourcing**, and **CQRS (Command Query Responsibility Segregation)** using the FastAPI framework. It showcases the use of repository and aggregate patterns, emphasizing modularity, scalability, and clean architecture principles.
 
