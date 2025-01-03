@@ -153,11 +153,6 @@ MongoDB is used as the primary event store. The default connection details are:
 
 ---
 
-## License
-This project is licensed under the MIT License. See `LICENSE` for details.
-
----
-
 ## Contact
-For questions or support, please open an issue or reach out to the repository owner.
+For questions or support, please open an issue or reach me by emailing or sending message in LinkedIn.
 
