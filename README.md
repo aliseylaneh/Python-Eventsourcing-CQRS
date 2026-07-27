@@ -125,6 +125,7 @@ class MongoDBInventoryUtility(IEventSourcingUtility):
             ...
         return inventory
 ```
+<img width="3740" height="8555" alt="diagram" src="https://github.com/user-attachments/assets/ab1f24de-1193-42af-a540-e43c2d64902e" />
 
 ---
 
