@@ -73,7 +73,7 @@ services:
 
   elasticsearch:
     restart: always
-    image: elasticsearch:8.13.0
+    image: elasticsearch:latest
     container_name: inventory-elasticsearch
     ports:
       - "9200:9200"
