@@ -6,9 +6,9 @@ from internal.es.services.inventory_utility import MongoDBInventoryUtility
 
 
 class GetInventoryQuery(BaseQuery):
-    def execute(self, sku: str) -> Inventory:
+    async def execute(self, sku: str) -> Inventory:
         with tracer.start_as_current_span(f'get-{sku}-inventory-usecase') as span:
-            inventory = MongoDBInventoryUtility.recreate_state(repository=self.repository, sku=sku)
+            inventory = await MongoDBInventoryUtility.recreate_state(repository=self.repository, sku=sku)
             if not inventory:
                 raise InventoryDoesNotExists()
             return inventory

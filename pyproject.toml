@@ -4,4 +4,6 @@ version = "0.1.0"
 description = "This project is implemented for reflecting the concenpts of CQRS and event-sourcing."
 readme = "README.md"
 requires-python = ">=3.14"
-dependencies = []
+dependencies = [
+    "pymongo>=4.17.0",
+]

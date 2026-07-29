@@ -9,9 +9,9 @@ class IInventoryRepository(ABC):
         self._collection = collection
 
     @abstractmethod
-    def insert(self, events: deque[Event]):
+    async def insert(self, events: deque[Event]):
         raise NotImplementedError
 
     @abstractmethod
-    def find(self, sku: str) -> deque[dict]:
+    async def find(self, sku: str) -> deque[dict]:
         raise NotImplementedError

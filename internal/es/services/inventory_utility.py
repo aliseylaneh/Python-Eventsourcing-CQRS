@@ -6,7 +6,7 @@ from internal.modules.invenotry.events.v1.inventory import InventoryEventType
 
 class MongoDBInventoryUtility(IEventSourcingUtility):
     @staticmethod
-    def recreate_state(repository: IInventoryRepository, sku: str) -> Inventory | None:
+    async def recreate_state(repository: IInventoryRepository, sku: str) -> Inventory | None:
         events = repository.find(sku=sku)
         inventory: Inventory = Inventory(sku='')
         for event in events:
