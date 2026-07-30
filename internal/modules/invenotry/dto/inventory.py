@@ -1,21 +1,27 @@
+from uuid import UUID
+
 from pydantic import BaseModel, PositiveInt
 
 
-class InventoryReserveStock(BaseModel):
+class UserIDDTO(BaseModel):
+    user_id: UUID
+
+
+class InventoryReserveStock(UserIDDTO, BaseModel):
     quantity: PositiveInt
 
 
-class CompleteReservedStock(BaseModel):
+class CompleteReservedStock(UserIDDTO, BaseModel):
     quantity: PositiveInt
 
 
-class CreateInventory(BaseModel):
+class CreateInventory(UserIDDTO, BaseModel):
     sku: str
     soh: PositiveInt
     available_quantity: PositiveInt
 
 
-class UpdateInventory(BaseModel):
+class UpdateInventory(UserIDDTO, BaseModel):
     soh: PositiveInt
     available_quantity: PositiveInt
 

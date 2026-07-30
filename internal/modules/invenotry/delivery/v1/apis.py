@@ -3,7 +3,7 @@ from opentelemetry import trace
 
 from config.otel import tracer
 from internal.domain.entities.types.inventory import SKU
-from ...commands.inventory import CompleteReservedCommand
+from ...commands.inventory import CompleteReservedStockCommand
 from ...commands.inventory import CreateInventoryCommand, ReserveStockCommand, UpdateInventoryCommand
 from ...dependencies.inventory import get_complete_reserved_command
 from ...dependencies.inventory import get_create_inventory_command, get_inventory_query, get_reserve_stock_command, \
@@ -22,11 +22,13 @@ async def reserve(sku: SKU, reserve_stock: InventoryReserveStock,
     This endpoint is used when ever there are available stocks for a specific Inventory and reserving for a given amount is possible.
     """
     try:
-        inventory = await command.execute(sku=sku, quantity=reserve_stock.quantity)
-        response = InventoryResponse(sku=inventory.sku,
-                                     soh=inventory.soh,
-                                     reserved=inventory.reserved,
-                                     available_quantity=inventory.available_quantity)
+        inventory = await command.execute(user_id=reserve_stock.user_id, sku=sku, quantity=reserve_stock.quantity)
+        response = InventoryResponse(
+            sku=inventory.sku,
+            soh=inventory.soh,
+            reserved=inventory.reserved,
+            available_quantity=inventory.available_quantity
+        )
         return response
     except Exception as exception:
         raise HTTPException(status_code=400, detail=str(exception))
@@ -34,17 +36,23 @@ async def reserve(sku: SKU, reserve_stock: InventoryReserveStock,
 
 @router.patch("/inventory/{sku}/complete")
 async def complete(sku: SKU, complete_reserved_stock: CompleteReservedStock,
-                   command: CompleteReservedCommand = Depends(get_complete_reserved_command)) -> InventoryResponse:
+                   command: CompleteReservedStockCommand = Depends(get_complete_reserved_command)) -> InventoryResponse:
     """
     This endpoint will process the use case of releasing the amount of reserved for a specific inventory.
     It should be noted which that amount was reserved before using /inventory/{sku}/reserved endpoint.
     """
     try:
-        inventory = await command.execute(sku=sku, quantity=complete_reserved_stock.quantity)
-        response = InventoryResponse(sku=inventory.sku,
-                                     soh=inventory.soh,
-                                     reserved=inventory.reserved,
-                                     available_quantity=inventory.available_quantity)
+        inventory = await command.execute(
+            user_id=complete_reserved_stock.user_id,
+            sku=sku,
+            quantity=complete_reserved_stock.quantity
+        )
+        response = InventoryResponse(
+            sku=inventory.sku,
+            soh=inventory.soh,
+            reserved=inventory.reserved,
+            available_quantity=inventory.available_quantity
+        )
         return response
     except Exception as exception:
         raise HTTPException(status_code=400, detail=str(exception))
@@ -58,11 +66,18 @@ async def create(inventory: CreateInventory,
     It will raise InventoryDoesExists for already created inventories.
     """
     try:
-        inventory = await command.execute(sku=inventory.sku, soh=inventory.soh, available_quantity=inventory.available_quantity)
-        response = InventoryResponse(sku=inventory.sku,
-                                     soh=inventory.soh,
-                                     reserved=inventory.reserved,
-                                     available_quantity=inventory.available_quantity)
+        inventory = await command.execute(
+            user_id=inventory.user_id,
+            sku=inventory.sku,
+            soh=inventory.soh,
+            available_quantity=inventory.available_quantity
+        )
+        response = InventoryResponse(
+            sku=inventory.sku,
+            soh=inventory.soh,
+            reserved=inventory.reserved,
+            available_quantity=inventory.available_quantity
+        )
         return response
     except Exception as exception:
         raise HTTPException(status_code=400, detail=str(exception))
@@ -72,13 +87,18 @@ async def create(inventory: CreateInventory,
 async def update(sku: SKU, inventory: UpdateInventory,
                  command: UpdateInventoryCommand = Depends(get_update_inventory_command)) -> InventoryResponse:
     try:
-        inventory = await command.execute(sku=sku,
-                                          soh=inventory.soh,
-                                          available_quantity=inventory.available_quantity)
-        response = InventoryResponse(sku=inventory.sku,
-                                     soh=inventory.soh,
-                                     reserved=inventory.reserved,
-                                     available_quantity=inventory.available_quantity)
+        inventory = await command.execute(
+            user_id=inventory.user_id,
+            sku=sku,
+            soh=inventory.soh,
+            available_quantity=inventory.available_quantity
+        )
+        response = InventoryResponse(
+            sku=inventory.sku,
+            soh=inventory.soh,
+            reserved=inventory.reserved,
+            available_quantity=inventory.available_quantity
+        )
         return response
     except Exception as exception:
         raise HTTPException(status_code=400, detail=str(exception))
@@ -89,10 +109,12 @@ async def get(sku: SKU, command: GetInventoryQuery = Depends(get_inventory_query
     with tracer.start_as_current_span('get-inventory-api') as span:
         try:
             inventory = await command.execute(sku=sku)
-            response = InventoryResponse(sku=inventory.sku,
-                                         soh=inventory.soh,
-                                         reserved=inventory.reserved,
-                                         available_quantity=inventory.available_quantity)
+            response = InventoryResponse(
+                sku=inventory.sku,
+                soh=inventory.soh,
+                reserved=inventory.reserved,
+                available_quantity=inventory.available_quantity
+            )
             return response
         except Exception as exception:
             raise HTTPException(status_code=400, detail=str(exception))

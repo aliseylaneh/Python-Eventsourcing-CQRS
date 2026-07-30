@@ -18,9 +18,10 @@ class InventoryEventType(str, Enum):
     INVENTORY_CREATED = 'INVENTORY_CREATED'
 
 
+# SCHEMA EVENTS
 @dataclass
 class BaseInventoryDetailEvent(Event):
-    sku: uuid = field(default=0)
+    sku: str = field(default=0)
     event_type: InventoryEventType
 
 
@@ -32,6 +33,15 @@ class BaseInventorySOHEvent(Event):
 @dataclass
 class BaseReservedEvent(BaseInventoryDetailEvent):
     reserved: int = field(default=0)
+
+
+@dataclass
+class InventoryEventDTO(Event):
+    event_type: InventoryEventType
+    sku: str = field(default='')
+    soh: int = field(default=0)
+    available_quantity: int = field(default=0)
+    reserved: int = 0
 
 
 # OPERATIONAL EVENTS

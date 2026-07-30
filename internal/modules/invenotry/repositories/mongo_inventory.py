@@ -4,6 +4,7 @@ import pymongo
 
 from internal.domain.events.base import Event
 from internal.domain.interfaces.repositories.iinventory import IInventoryRepository
+from internal.modules.invenotry.events.v1.inventory import InventoryEventDTO
 
 
 class InventoryMongoRepository(IInventoryRepository):
@@ -13,5 +14,16 @@ class InventoryMongoRepository(IInventoryRepository):
         await self._collection.insert_many(events)
 
     async def find(self, sku: str) -> deque[dict]:
-        events_sequence = deque(self._collection.find({'sku': sku}).sort('created_at', pymongo.ASCENDING))
-        return events_sequence
+        events_sequence = await self._collection.find(
+            {
+                'sku': sku
+            },
+            {
+                "_id": 0,
+            }
+        ).sort(
+            'created_at', pymongo.ASCENDING).to_list(length=None)
+        if len(events_sequence) != 0:
+            result = deque([InventoryEventDTO(**event) for event in events_sequence])
+            return result
+        return deque(events_sequence)

@@ -5,36 +5,56 @@ from ..events.v1.inventory import (AvailableQuantityReplacedEvent,
                                    InventoryCreatedEvent,
                                    ProcessedReservedDecreasedEvent,
                                    ReserveQuantityIncreasedEvent,
-                                   SOHReplacedEvent)
+                                   SOHReplacedEvent, AvailableQuantityDecreasedEvent, ProcessedReservedSOHDecreasedEvent)
 from ....domain.commands.commands import BaseCommand
 from ....domain.entities.inventory import Inventory
+from ....domain.exceptions.inventory import InventoryAlreadyExists, InventoryDoesNotExists
 
 
 class CreateInventoryCommand(BaseCommand):
     async def execute(self, user_id: UUID, sku: str, soh: int, available_quantity: int) -> Inventory:
         # Check if inventory already exists
-        event = InventoryCreatedEvent(sku=sku, soh=soh, available_quantity=available_quantity)
-        await self.aggregate(aggregate_id=user_id).apply(events=deque([event]))
-        return self.aggregate.inventory
+        events = await self.event_repository.find(sku=sku)
+        inventory_aggregate = self.aggregate(aggregate_id=user_id)
+        await inventory_aggregate.apply(events=events)
+        if inventory_aggregate.inventory:
+            raise InventoryAlreadyExists()
+        new_events = await inventory_aggregate.create(sku=sku, soh=soh, available_quantity=available_quantity)
+        await self.event_repository.insert(events=new_events)
+        return inventory_aggregate.inventory
 
 
 class ReserveStockCommand(BaseCommand):
     async def execute(self, user_id: UUID, sku: str, quantity: int) -> Inventory:
-        event = ReserveQuantityIncreasedEvent(sku=sku, reserved=quantity)
-        await self.aggregate(aggregate_id=user_id).apply(events=deque([event]))
-        return self.aggregate.inventory
+        events = await self.event_repository.find(sku=sku)
+        inventory_aggregate = self.aggregate(aggregate_id=user_id)
+        await inventory_aggregate.apply(events=events)
+        if not inventory_aggregate.inventory:
+            raise InventoryDoesNotExists()
+        new_events = await inventory_aggregate.reserve_stock(quantity=quantity)
+        await self.event_repository.insert(events=new_events)
+        return inventory_aggregate.inventory
+
+
+class CompleteReservedStockCommand(BaseCommand):
+    async def execute(self, user_id: UUID, sku: str, quantity: int) -> Inventory:
+        events = await self.event_repository.find(sku=sku)
+        inventory_aggregate = self.aggregate(aggregate_id=user_id)
+        await inventory_aggregate.apply(events=events)
+        if not inventory_aggregate.inventory:
+            raise InventoryDoesNotExists()
+        new_events = await inventory_aggregate.complete_reserved_stock(quantity=quantity)
+        await self.event_repository.insert(events=new_events)
+        return inventory_aggregate.inventory
 
 
 class UpdateInventoryCommand(BaseCommand):
     async def execute(self, user_id: UUID, sku: str, soh: int, available_quantity: int) -> Inventory:
-        replace_soh_event = SOHReplacedEvent(sku=sku, soh=soh)
-        replace_available_quantity_event = AvailableQuantityReplacedEvent(sku=sku, available_quantity=available_quantity)
-        await self.aggregate(aggregate_id=user_id).apply(events=deque([replace_soh_event, replace_available_quantity_event]))
-        return self.aggregate.inventory
-
-
-class CompleteReservedCommand(BaseCommand):
-    async def execute(self, user_id: UUID, sku: str, quantity: int) -> Inventory:
-        event = ProcessedReservedDecreasedEvent(sku=sku, reserved=quantity)
-        await self.aggregate(aggregate_id=user_id).apply(deque([event]))
-        return self.aggregate.inventory
+        events = await self.event_repository.find(sku=sku)
+        inventory_aggregate = self.aggregate(aggregate_id=user_id)
+        await inventory_aggregate.apply(events=events)
+        if not inventory_aggregate.inventory:
+            raise InventoryDoesNotExists()
+        new_events = await inventory_aggregate.update(soh=soh, available_quantity=available_quantity)
+        await self.event_repository.insert(events=new_events)
+        return inventory_aggregate.inventory

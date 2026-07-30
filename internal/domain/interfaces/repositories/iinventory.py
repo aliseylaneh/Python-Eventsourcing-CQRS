@@ -13,5 +13,5 @@ class IInventoryRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def find(self, sku: str) -> deque[dict]:
+    async def find(self, sku: str) -> deque[dict] | None:
         raise NotImplementedError
