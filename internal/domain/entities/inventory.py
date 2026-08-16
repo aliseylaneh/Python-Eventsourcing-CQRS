@@ -5,7 +5,7 @@ from typing import Any, Dict, Optional
 from internal.domain.exceptions.inventory import (
     AvailableQuantityError, InvalidAvailableQuantityUpdate,
     InvalidReservedAmount, InvalidSOHUpdate, OutOfStock,
-    ReservedStockInProcess)
+    ReservedStockInProcess, ReserveMoreThanStock)
 
 
 @dataclass
@@ -52,7 +52,7 @@ class Inventory:
         if self.soh <= 0:
             raise OutOfStock()
         if self.available_quantity < amount:
-            raise OutOfStock()
+            raise ReserveMoreThanStock()
         self.reserved += amount
 
 

@@ -10,6 +10,11 @@ class OutOfStock(Exception):
         super(OutOfStock, self).__init__("Out of stock!!.")
 
 
+class ReserveMoreThanStock(Exception):
+    def __init__(self, *args, **kwargs):
+        super(ReserveMoreThanStock, self).__init__("You can't reserve more than stock!!.")
+
+
 class InvalidRelatedEventType(Exception):
 
     def __init__(self, event_type: Enum, aggregate):

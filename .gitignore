@@ -129,3 +129,4 @@ dmypy.json
 # Pycharm configuration folder
 .idea
 mongodb
+.zed
