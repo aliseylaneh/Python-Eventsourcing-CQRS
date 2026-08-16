@@ -1,13 +1,16 @@
 from dataclasses import dataclass, field
+from datetime import datetime
+from typing import Any, Dict, Optional
 
-from internal.domain.exceptions.inventory import AvailableQuantityError, InvalidAvailableQuantityUpdate, InvalidReservedAmount, \
-    InvalidSOHUpdate, OutOfStock, \
-    ReservedStockInProcess
+from internal.domain.exceptions.inventory import (
+    AvailableQuantityError, InvalidAvailableQuantityUpdate,
+    InvalidReservedAmount, InvalidSOHUpdate, OutOfStock,
+    ReservedStockInProcess)
 
 
 @dataclass
 class Inventory:
-    sku: str = field(default='')
+    sku: str = field(default="")
     soh: int = field(default=0)
     available_quantity: int = field(default=0)
     reserved: int = field(default=0)
@@ -51,3 +54,11 @@ class Inventory:
         if self.available_quantity < amount:
             raise OutOfStock()
         self.reserved += amount
+
+
+@dataclass
+class OutboxRecord:
+    event: Dict[str, Any]
+    processed_at: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+    processed: bool = False

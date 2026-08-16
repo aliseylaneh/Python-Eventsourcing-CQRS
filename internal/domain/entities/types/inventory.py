@@ -1,3 +1,3 @@
 from typing import NewType
 
-SKU = NewType(name='sku', tp=str)
+SKU = NewType(name="sku", tp=str)

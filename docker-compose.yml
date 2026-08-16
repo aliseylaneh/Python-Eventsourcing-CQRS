@@ -22,6 +22,7 @@ services:
   mongo:
     image: mongo:latest
     container_name: inventory-mongo
+    command: [ "mongod", "--replSet", "rs0", "--keyFile", "/opt/mongodb/mongodb.key", "--bind_ip_all" ]
     environment:
       MONGO_INITDB_DATABASE: inventory
       MONGO_INITDB_ROOT_USERNAME: admin
@@ -30,6 +31,7 @@ services:
       - "27017:27017"
     volumes:
       - mongo-data:/data/db
+      - ./mongodb/mongodb.key:/opt/mongodb/mongodb.key:ro
     networks:
       - app_inventory
 
@@ -94,7 +96,6 @@ volumes:
   mongo-express-data:
   esdata:
     driver: local
-
 
 networks:
   app_inventory:
