@@ -17,6 +17,10 @@ class InventoryMongoRepository(IInventoryRepository):
         )
 
     async def insert(self, events: deque[Event]):
+        """
+        Insert sequence of events into event collection and also outbox collection.
+        :param events: sequence of events
+        """
         events_collection: Deque[dict[str, Any]] = deque()
         outbox_collection: Deque[dict[str, Any]] = deque()
 
@@ -40,6 +44,11 @@ class InventoryMongoRepository(IInventoryRepository):
                 )
 
     async def find(self, sku: str) -> deque[dict]:
+        """
+        Find events based on sku and reflect the retrieved data into common DTO.
+        :param sku: sku
+        :return: deque[dict]
+        """
         events_sequence = (
             await self._db[self._event_store]
             .find(
