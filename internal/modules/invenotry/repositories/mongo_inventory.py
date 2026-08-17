@@ -11,36 +11,21 @@ from internal.modules.invenotry.events.v1.inventory import InventoryEventDTO
 
 
 class InventoryMongoRepository(IInventoryRepository):
-    def __init__(self, db: AsyncDatabase, event_store: str, outbox_store: str):
-        super(InventoryMongoRepository, self).__init__(
-            db=db, event_store=event_store, outbox_store=outbox_store
-        )
+    def __init__(self, db: AsyncDatabase, event_store: str):
+        super(InventoryMongoRepository, self).__init__(db=db, event_store=event_store)
 
     async def insert(self, events: deque[Event]):
         """
         Insert sequence of events into event collection and also outbox collection.
         :param events: sequence of events
         """
-        events_collection: Deque[dict[str, Any]] = deque()
-        outbox_collection: Deque[dict[str, Any]] = deque()
-
-        for event in events:
-            event_doc = event.__dict__
-            outbox_doc = {
-                "event": event_doc,
-                "created_at": event.occurred_at,
-                "published": False,
-            }
-            events_collection.append(event_doc)
-            outbox_collection.append(outbox_doc)
-
+        events_collection: Deque[dict[str, Any]] = deque(
+            event.__dict__ for event in events
+        )
         async with self._db.client.start_session() as session:
             async with await session.start_transaction():
                 await self._db[self._event_store].insert_many(
                     events_collection, session=session, ordered=True
-                )
-                await self._db[self._outbox_store].insert_many(
-                    outbox_collection, session=session
                 )
 
     async def find(self, sku: str) -> deque[dict]:

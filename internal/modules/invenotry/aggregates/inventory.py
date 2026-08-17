@@ -1,7 +1,7 @@
 from collections import deque
 from uuid import UUID
 
-from internal.domain.aggregates.inventory import AggregateRoot
+from internal.domain.aggregates.base import AggregateRoot
 from internal.domain.entities.inventory import Inventory
 from internal.domain.events.base import Event
 from internal.domain.exceptions.inventory import (InvalidRelatedEventType,

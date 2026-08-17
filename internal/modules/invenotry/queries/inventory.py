@@ -1,8 +1,6 @@
 from config.otel import tracer
 from internal.domain.entities.inventory import Inventory
-from internal.domain.exceptions.inventory import InventoryDoesNotExists
 from internal.domain.queries.queries import BaseQuery
-from internal.es.services.inventory_utility import MongoDBInventoryUtility
 
 
 class GetInventoryQuery(BaseQuery):

@@ -12,7 +12,9 @@ class OutOfStock(Exception):
 
 class ReserveMoreThanStock(Exception):
     def __init__(self, *args, **kwargs):
-        super(ReserveMoreThanStock, self).__init__("You can't reserve more than stock!!.")
+        super(ReserveMoreThanStock, self).__init__(
+            "You can't reserve more than stock!!."
+        )
 
 
 class InvalidRelatedEventType(Exception):

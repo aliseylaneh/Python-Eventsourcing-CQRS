@@ -3,8 +3,8 @@ from typing import Type
 from fastapi import Depends
 from pymongo import AsyncMongoClient
 
-from adapter.mongo import db, event_collection, outbox_collection
-from internal.domain.aggregates.inventory import AggregateRoot
+from adapter.mongo import db, event_collection
+from internal.domain.aggregates.base import AggregateRoot
 from internal.domain.interfaces.repositories.iinventory import \
     IInventoryRepository
 from internal.modules.invenotry.aggregates.inventory import InventoryAggregate
@@ -26,7 +26,6 @@ async def inventory_event_repository(
     return InventoryMongoRepository(
         db=mongo_inventory_db,
         event_store=event_collection,
-        outbox_store=outbox_collection,
     )
 
 
