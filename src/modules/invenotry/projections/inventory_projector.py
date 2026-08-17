@@ -1,7 +1,7 @@
-from internal.domain.interfaces.repositories.iinventory import \
+from src.domain.interfaces.repositories.iinventory import \
     IInventoryProjectionRepository
-from internal.modules.invenotry.events.v1.inventory import (InventoryEventDTO,
-                                                            InventoryEventType)
+from src.modules.invenotry.events.v1.inventory import (InventoryEventDTO,
+                                                       InventoryEventType)
 
 
 class InventoryProjection:

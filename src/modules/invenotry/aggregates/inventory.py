@@ -1,12 +1,12 @@
 from collections import deque
 from uuid import UUID
 
-from internal.domain.aggregates.base import AggregateRoot
-from internal.domain.entities.inventory import Inventory
-from internal.domain.events.base import Event
-from internal.domain.exceptions.inventory import (InvalidRelatedEventType,
-                                                  InventoryDoesNotExists)
-from internal.modules.invenotry.events.v1.inventory import (
+from src.domain.aggregates.base import AggregateRoot
+from src.domain.entities.inventory import Inventory
+from src.domain.events.base import Event
+from src.domain.exceptions.inventory import (InvalidRelatedEventType,
+                                             InventoryDoesNotExists)
+from src.modules.invenotry.events.v1.inventory import (
     AvailableQuantityDecreasedEvent, AvailableQuantityReplacedEvent,
     BaseInventoryDetailEvent, InventoryCreatedEvent, InventoryEventType,
     ProcessedReservedDecreasedEvent, ProcessedReservedSOHDecreasedEvent,

@@ -6,7 +6,7 @@ from opentelemetry.instrumentation.requests import RequestsInstrumentor
 
 from adapter.mongo import close_client, ensure_indexes
 from config.otel import *  # noqa
-from internal.modules.invenotry.delivery.v1.apis import \
+from src.modules.invenotry.delivery.v1.apis import \
     router as inventory_router
 
 

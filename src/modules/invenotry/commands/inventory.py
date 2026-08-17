@@ -1,9 +1,9 @@
 from uuid import UUID
 
-from internal.domain.commands.commands import BaseCommand
-from internal.domain.entities.inventory import Inventory
-from internal.domain.exceptions.inventory import (InventoryAlreadyExists,
-                                                  InventoryDoesNotExists)
+from src.domain.commands.commands import BaseCommand
+from src.domain.entities.inventory import Inventory
+from src.domain.exceptions.inventory import (InventoryAlreadyExists,
+                                             InventoryDoesNotExists)
 
 from ..aggregates.inventory import InventoryAggregate
 

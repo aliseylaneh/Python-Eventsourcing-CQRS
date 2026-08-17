@@ -1,7 +1,7 @@
 from abc import ABC
 
-from internal.domain.interfaces.iuse_case import IUseCase
-from internal.domain.interfaces.repositories.iinventory import \
+from src.domain.interfaces.iuse_case import IUseCase
+from src.domain.interfaces.repositories.iinventory import \
     IInventoryRepository
 
 

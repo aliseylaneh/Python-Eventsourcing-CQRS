@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
 
 from config.otel import tracer
-from internal.domain.entities.types.inventory import SKU
+from src.domain.entities.types.inventory import SKU
 
 from ...commands.inventory import (CompleteReservedStockCommand,
                                    CreateInventoryCommand, ReserveStockCommand,

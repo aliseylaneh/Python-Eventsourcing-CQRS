@@ -30,7 +30,8 @@ This project is a Python-based implementation of **Domain-Driven Design (DDD)**,
 ```
 
 ### Key Components
-1. **Domain Layer (`internal/domain/`):**
+
+1. **Domain Layer (`src/domain/`):**
    - Aggregates: Encapsulates business logic and ensures consistency.
    - Commands: Represents domain commands (write operations).
    - Entities: Core business objects.
@@ -38,10 +39,10 @@ This project is a Python-based implementation of **Domain-Driven Design (DDD)**,
    - Exceptions: Custom exceptions for domain logic.
    - Interfaces: Defines contracts (e.g., repositories, use cases).
 
-2. **Event Sourcing (`internal/es/`):**
+2. **Event Sourcing (`src/es/`):**
    - Reconstructs the current state by replaying domain events.
 
-3. **Modules Layer (`internal/modules/`):**
+3. **Modules Layer (`src/modules/`):**
    - Implements use cases and integrates domain logic with infrastructure.
 
 4. **Adapters (`adapter/`):**

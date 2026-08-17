@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from collections import deque
 
-from internal.domain.events.base import Event
+from src.domain.events.base import Event
 
 
 class AggregateRoot(ABC):

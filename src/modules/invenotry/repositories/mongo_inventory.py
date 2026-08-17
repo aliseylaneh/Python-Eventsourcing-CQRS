@@ -4,10 +4,10 @@ from typing import Any, Deque
 import pymongo
 from pymongo.asynchronous.database import AsyncDatabase
 
-from internal.domain.events.base import Event
-from internal.domain.interfaces.repositories.iinventory import \
+from src.domain.events.base import Event
+from src.domain.interfaces.repositories.iinventory import \
     IInventoryRepository, IInventoryProjectionRepository
-from internal.modules.invenotry.events.v1.inventory import InventoryEventDTO
+from src.modules.invenotry.events.v1.inventory import InventoryEventDTO
 
 
 class InventoryMongoRepository(IInventoryRepository):

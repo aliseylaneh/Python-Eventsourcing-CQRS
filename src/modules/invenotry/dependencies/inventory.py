@@ -4,15 +4,15 @@ from fastapi import Depends
 from pymongo import AsyncMongoClient
 
 from adapter.mongo import db, event_collection
-from internal.domain.aggregates.base import AggregateRoot
-from internal.domain.interfaces.repositories.iinventory import \
+from src.domain.aggregates.base import AggregateRoot
+from src.domain.interfaces.repositories.iinventory import \
     IInventoryRepository
-from internal.modules.invenotry.aggregates.inventory import InventoryAggregate
-from internal.modules.invenotry.commands.inventory import (
+from src.modules.invenotry.aggregates.inventory import InventoryAggregate
+from src.modules.invenotry.commands.inventory import (
     CompleteReservedStockCommand, CreateInventoryCommand, ReserveStockCommand,
     UpdateInventoryCommand)
-from internal.modules.invenotry.queries.inventory import GetInventoryQuery
-from internal.modules.invenotry.repositories.mongo_inventory import \
+from src.modules.invenotry.queries.inventory import GetInventoryQuery
+from src.modules.invenotry.repositories.mongo_inventory import \
     InventoryMongoRepository
 
 

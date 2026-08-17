@@ -1,6 +1,6 @@
 from config.otel import tracer
-from internal.domain.entities.inventory import Inventory
-from internal.domain.queries.queries import BaseQuery
+from src.domain.entities.inventory import Inventory
+from src.domain.queries.queries import BaseQuery
 
 
 class GetInventoryQuery(BaseQuery):

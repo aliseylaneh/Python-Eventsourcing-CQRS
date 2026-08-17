@@ -4,7 +4,7 @@ from typing import Any
 
 from pymongo.asynchronous.database import AsyncDatabase
 
-from internal.domain.events.base import Event
+from src.domain.events.base import Event
 
 
 class IInventoryRepository(ABC):

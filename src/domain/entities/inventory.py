@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 
-from internal.domain.exceptions.inventory import (
+from src.domain.exceptions.inventory import (
     AvailableQuantityError, InvalidAvailableQuantityUpdate,
     InvalidReservedAmount, InvalidSOHUpdate, OutOfStock,
     ReservedStockInProcess, ReserveMoreThanStock)
