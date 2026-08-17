@@ -1,6 +1,4 @@
 from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Any, Dict, Optional
 
 from internal.domain.exceptions.inventory import (
     AvailableQuantityError, InvalidAvailableQuantityUpdate,
@@ -54,11 +52,3 @@ class Inventory:
         if self.available_quantity < amount:
             raise ReserveMoreThanStock()
         self.reserved += amount
-
-
-@dataclass
-class OutboxRecord:
-    event: Dict[str, Any]
-    processed_at: Optional[datetime] = None
-    created_at: Optional[datetime] = None
-    processed: bool = False

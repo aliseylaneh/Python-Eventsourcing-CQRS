@@ -4,12 +4,13 @@ from internal.domain.commands.commands import BaseCommand
 from internal.domain.entities.inventory import Inventory
 from internal.domain.exceptions.inventory import (InventoryAlreadyExists,
                                                   InventoryDoesNotExists)
+
 from ..aggregates.inventory import InventoryAggregate
 
 
 class CreateInventoryCommand(BaseCommand):
     async def execute(
-            self, user_id: UUID, sku: str, soh: int, available_quantity: int
+        self, user_id: UUID, sku: str, soh: int, available_quantity: int
     ) -> Inventory:
         # Check if inventory already exists
         events = await self.event_repository.find(sku=sku)
@@ -54,7 +55,7 @@ class CompleteReservedStockCommand(BaseCommand):
 
 class UpdateInventoryCommand(BaseCommand):
     async def execute(
-            self, user_id: UUID, sku: str, soh: int, available_quantity: int
+        self, user_id: UUID, sku: str, soh: int, available_quantity: int
     ) -> Inventory:
         events = await self.event_repository.find(sku=sku)
         inventory_aggregate: InventoryAggregate = self.aggregate()

@@ -6,7 +6,7 @@ from pymongo.asynchronous.database import AsyncDatabase
 
 from internal.domain.events.base import Event
 from internal.domain.interfaces.repositories.iinventory import \
-    IInventoryRepository
+    IInventoryRepository, IInventoryProjectionRepository
 from internal.modules.invenotry.events.v1.inventory import InventoryEventDTO
 
 
@@ -49,3 +49,99 @@ class InventoryMongoRepository(IInventoryRepository):
             result = deque([InventoryEventDTO(**event) for event in events_sequence])
             return result
         return deque(events_sequence)
+
+
+class InventoryMongoProjectionRepository(IInventoryProjectionRepository):
+
+    async def decrease_reserved_and_soh(self, sku: str, amount: int) -> None:
+        pass
+
+    def __init__(self, db):
+        self.collection = db["inventory_read_model"]
+
+    async def create(self, inventory: dict[str, Any]) -> None:
+        await self.collection.insert_one(inventory)
+
+    async def replace_soh(
+            self,
+            sku: str,
+            soh: int,
+    ) -> None:
+        await self.collection.update_one(
+            {"sku": sku},
+            {
+                "$set": {
+                    "soh": soh,
+                }
+            },
+        )
+
+    async def replace_available_quantity(
+            self,
+            sku: str,
+            available_quantity: int,
+    ) -> None:
+        await self.collection.update_one(
+            {"sku": sku},
+            {
+                "$set": {
+                    "available_quantity": available_quantity,
+                }
+            },
+        )
+
+    async def increase_reserved(
+            self,
+            sku: str,
+            amount: int,
+    ) -> None:
+        await self.collection.update_one(
+            {"sku": sku},
+            {
+                "$inc": {
+                    "reserved": amount,
+                },
+            },
+        )
+
+    async def decrease_reserved(
+            self,
+            sku: str,
+            amount: int,
+    ) -> None:
+        await self.collection.update_one(
+            {"sku": sku},
+            {
+                "$inc": {
+                    "reserved": amount,
+                }
+            },
+        )
+
+    async def decrease_available_quantity(
+            self,
+            sku: str,
+            amount: int,
+    ) -> None:
+        await self.collection.update_one(
+            {"sku": sku},
+            {
+                "$inc": {
+                    "available_quantity": amount,
+                }
+            },
+        )
+
+    async def decrease_soh(
+            self,
+            sku: str,
+            amount: int,
+    ) -> None:
+        await self.collection.update_one(
+            {"sku": sku},
+            {
+                "$inc": {
+                    "soh": amount,
+                }
+            },
+        )
