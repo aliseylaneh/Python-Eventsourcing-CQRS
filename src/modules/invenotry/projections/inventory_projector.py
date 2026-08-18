@@ -1,14 +1,14 @@
 from src.domain.interfaces.repositories.iinventory import \
-    IInventoryProjectionRepository
-from src.modules.invenotry.events.v1.inventory_events import (InventoryEventDTO,
-                                                              InventoryEventType)
+    IMongoInventoryReadRepository
+from src.modules.invenotry.events.v1.inventory_events import (
+    InventoryEventDTO, InventoryEventType)
 
 
 class InventoryProjection:
 
     def __init__(
-            self,
-            repository: IInventoryProjectionRepository,
+        self,
+        repository: IMongoInventoryReadRepository,
     ):
         self.repository = repository
 

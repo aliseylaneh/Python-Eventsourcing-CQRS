@@ -1,9 +1,11 @@
 from dataclasses import dataclass, field
 
-from src.domain.exceptions.inventory import (
-    AvailableQuantityError, InvalidAvailableQuantityUpdate,
-    InvalidReservedAmount, InvalidSOHUpdate, OutOfStock,
-    ReservedStockInProcess, ReserveMoreThanStock)
+from src.domain.exceptions.inventory import (AvailableQuantityError,
+                                             InvalidAvailableQuantityUpdate,
+                                             InvalidReservedAmount,
+                                             InvalidSOHUpdate, OutOfStock,
+                                             ReservedStockInProcess,
+                                             ReserveMoreThanStock)
 
 
 @dataclass
@@ -30,7 +32,6 @@ class Inventory:
             raise InvalidReservedAmount()
         self.reserved -= amount
 
-    async def update_soh(self, amount: int):
         """
         Updating soh can be done with positive and negative values.
         """

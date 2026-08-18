@@ -1,4 +1,4 @@
-from typing import Dict, Any
+from typing import Any, Dict
 
 from config.otel import tracer
 from src.domain.queries.queries import BaseQuery

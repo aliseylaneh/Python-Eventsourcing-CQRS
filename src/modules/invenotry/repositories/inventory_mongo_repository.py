@@ -5,14 +5,16 @@ import pymongo
 from pymongo.asynchronous.database import AsyncDatabase
 
 from src.domain.events.base import Event
-from src.domain.interfaces.repositories.iinventory import \
-    IInventoryRepository, IInventoryProjectionRepository
+from src.domain.interfaces.repositories.iinventory import (
+    IMongoInventoryReadRepository, IMongoInventoryWriteRepository)
 from src.modules.invenotry.events.v1.inventory_events import InventoryEventDTO
 
 
-class InventoryMongoRepository(IInventoryRepository):
-    def __init__(self, db: AsyncDatabase, event_store: str):
-        super(InventoryMongoRepository, self).__init__(db=db, event_store=event_store)
+class InventoryWriteRepository(IMongoInventoryWriteRepository):
+    def __init__(self, db: AsyncDatabase, event_collection: str):
+        super(InventoryWriteRepository, self).__init__(
+            db=db, event_collection=event_collection
+        )
 
     async def insert(self, events: deque[Event]):
         """
@@ -24,7 +26,7 @@ class InventoryMongoRepository(IInventoryRepository):
         )
         async with self._db.client.start_session() as session:
             async with await session.start_transaction():
-                await self._db[self._event_store].insert_many(
+                await self._db[self._event_collection].insert_many(
                     events_collection, session=session, ordered=True
                 )
 
@@ -35,7 +37,7 @@ class InventoryMongoRepository(IInventoryRepository):
         :return: deque[dict]
         """
         events_sequence = (
-            await self._db[self._event_store]
+            await self._db[self._event_collection]
             .find(
                 {"sku": sku},
                 {
@@ -51,19 +53,21 @@ class InventoryMongoRepository(IInventoryRepository):
         return deque(events_sequence)
 
 
-class InventoryMongoProjectionRepository(IInventoryProjectionRepository):
+class InventoryReadRepository(IMongoInventoryReadRepository):
     def __init__(self, db: AsyncDatabase, projection_store: str):
-        super(InventoryMongoProjectionRepository, self).__init__(db=db, project_store=projection_store)
+        super(InventoryReadRepository, self).__init__(
+            db=db, projection_collection=projection_store
+        )
 
     async def create(self, inventory: Dict[str, Any]) -> None:
-        await self._db[self._projection_store].insert_one(inventory)
+        await self._db[self._projection_collection].insert_one(inventory)
 
     async def find(self, sku: str) -> Dict[str, Any] | None:
-        result = await self._db[self._projection_store].find_one({"sku": sku})
+        result = await self._db[self._projection_collection].find_one({"sku": sku})
         return result
 
     async def set_soh(self, sku: str, soh: int):
-        await self._db[self._projection_store].update_one(
+        await self._db[self._projection_collection].update_one(
             {"sku": sku},
             {
                 "$set": {
@@ -73,7 +77,7 @@ class InventoryMongoProjectionRepository(IInventoryProjectionRepository):
         )
 
     async def set_available_quantity(self, sku: str, available_quantity: int) -> None:
-        await self._db[self._projection_store].update_one(
+        await self._db[self._projection_collection].update_one(
             {"sku": sku},
             {
                 "$set": {
@@ -82,8 +86,12 @@ class InventoryMongoProjectionRepository(IInventoryProjectionRepository):
             },
         )
 
-    async def increase_reserved(self, sku: str, amount: int, ) -> None:
-        await self._db[self._projection_store].update_one(
+    async def increase_reserved(
+        self,
+        sku: str,
+        amount: int,
+    ) -> None:
+        await self._db[self._projection_collection].update_one(
             {"sku": sku},
             {
                 "$inc": {
@@ -93,7 +101,7 @@ class InventoryMongoProjectionRepository(IInventoryProjectionRepository):
         )
 
     async def decrease_reserved(self, sku: str, amount: int):
-        await self._db[self._projection_store].update_one(
+        await self._db[self._projection_collection].update_one(
             {"sku": sku},
             {
                 "$inc": {
@@ -103,7 +111,7 @@ class InventoryMongoProjectionRepository(IInventoryProjectionRepository):
         )
 
     async def decrease_available_quantity(self, sku: str, amount: int):
-        await self._db[self._projection_store].update_one(
+        await self._db[self._projection_collection].update_one(
             {"sku": sku},
             {
                 "$inc": {
@@ -112,8 +120,12 @@ class InventoryMongoProjectionRepository(IInventoryProjectionRepository):
             },
         )
 
-    async def decrease_soh(self, sku: str, amount: int, ):
-        await self._db[self._projection_store].update_one(
+    async def decrease_soh(
+        self,
+        sku: str,
+        amount: int,
+    ):
+        await self._db[self._projection_collection].update_one(
             {"sku": sku},
             {
                 "$inc": {

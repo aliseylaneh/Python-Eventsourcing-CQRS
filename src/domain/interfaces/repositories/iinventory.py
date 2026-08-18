@@ -7,10 +7,10 @@ from pymongo.asynchronous.database import AsyncDatabase
 from src.domain.events.base import Event
 
 
-class IInventoryRepository(ABC):
-    def __init__(self, db, event_store):
+class IMongoInventoryWriteRepository(ABC):
+    def __init__(self, db, event_collection):
         self._db: AsyncDatabase = db
-        self._event_store = event_store
+        self._event_collection = event_collection
 
     @abstractmethod
     async def insert(self, events: deque[Event]):
@@ -21,10 +21,10 @@ class IInventoryRepository(ABC):
         raise NotImplementedError
 
 
-class IInventoryProjectionRepository(ABC):
-    def __init__(self, db: AsyncDatabase, project_store: str):
+class IMongoInventoryReadRepository(ABC):
+    def __init__(self, db: AsyncDatabase, projection_collection: str):
         self._db: AsyncDatabase = db
-        self._projection_store = project_store
+        self._projection_collection = projection_collection
 
     @abstractmethod
     async def create(self, inventory: Dict[str, Any]) -> None:
@@ -35,15 +35,27 @@ class IInventoryProjectionRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def set_soh(self, sku: str, soh: int, ) -> None:
+    async def set_soh(
+        self,
+        sku: str,
+        soh: int,
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def set_available_quantity(self, sku: str, available_quantity: int, ) -> None:
+    async def set_available_quantity(
+        self,
+        sku: str,
+        available_quantity: int,
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def increase_reserved(self, sku: str, amount: int, ) -> None:
+    async def increase_reserved(
+        self,
+        sku: str,
+        amount: int,
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -51,9 +63,17 @@ class IInventoryProjectionRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def decrease_soh(self, sku: str, amount: int, ) -> None:
+    async def decrease_soh(
+        self,
+        sku: str,
+        amount: int,
+    ) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def decrease_available_quantity(self, sku: str, amount: int, ) -> None:
+    async def decrease_available_quantity(
+        self,
+        sku: str,
+        amount: int,
+    ) -> None:
         raise NotImplementedError
