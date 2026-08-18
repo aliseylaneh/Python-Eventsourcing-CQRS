@@ -35,11 +35,7 @@ class IMongoInventoryReadRepository(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    async def set_soh(
-        self,
-        sku: str,
-        soh: int,
-    ) -> None:
+    async def set_soh(self, sku: str, soh: int, version: int) -> None:
         raise NotImplementedError
 
     @abstractmethod
@@ -47,33 +43,24 @@ class IMongoInventoryReadRepository(ABC):
         self,
         sku: str,
         available_quantity: int,
+        version: int,
     ) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def increase_reserved(
-        self,
-        sku: str,
-        amount: int,
-    ) -> None:
+    async def increase_reserved(self, sku: str, amount: int, version: int) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def decrease_reserved(self, sku: str, amount: int) -> None:
+    async def decrease_reserved(self, sku: str, amount: int, version: int) -> None:
         raise NotImplementedError
 
     @abstractmethod
-    async def decrease_soh(
-        self,
-        sku: str,
-        amount: int,
-    ) -> None:
+    async def decrease_soh(self, sku: str, amount: int, version: int) -> None:
         raise NotImplementedError
 
     @abstractmethod
     async def decrease_available_quantity(
-        self,
-        sku: str,
-        amount: int,
+        self, sku: str, amount: int, version: int
     ) -> None:
         raise NotImplementedError

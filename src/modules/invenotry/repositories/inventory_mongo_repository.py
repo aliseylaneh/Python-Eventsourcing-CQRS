@@ -60,63 +60,63 @@ class InventoryReadRepository(IMongoInventoryReadRepository):
         )
 
     async def create(self, inventory: Dict[str, Any]) -> None:
-        await self._db[self._projection_collection].insert_one(inventory)
+        await self._db[self._projection_collection].update_one(
+            {"sku": inventory["sku"]},
+            {"$setOnInsert": inventory},
+            upsert=True,
+        )
 
     async def find(self, sku: str) -> Dict[str, Any] | None:
         result = await self._db[self._projection_collection].find_one({"sku": sku})
         return result
 
-    async def set_soh(self, sku: str, soh: int):
+    async def set_soh(self, sku: str, soh: int, version: int) -> None:
         await self._db[self._projection_collection].update_one(
-            {"sku": sku},
-            {
-                "$set": {
-                    "soh": soh,
-                }
-            },
+            {"sku": sku, "last_applied_version": {"$lt": version}},
+            {"$set": {"soh": soh, "last_applied_version": version}},
         )
 
-    async def set_available_quantity(self, sku: str, available_quantity: int) -> None:
+    async def set_available_quantity(
+        self, sku: str, available_quantity: int, version: int
+    ) -> None:
         await self._db[self._projection_collection].update_one(
             {"sku": sku},
             {
                 "$set": {
                     "available_quantity": available_quantity,
-                }
-            },
-        )
-
-    async def increase_reserved(
-        self,
-        sku: str,
-        amount: int,
-    ) -> None:
-        await self._db[self._projection_collection].update_one(
-            {"sku": sku},
-            {
-                "$inc": {
-                    "reserved": amount,
+                    "last_applied_version": version,
                 },
             },
         )
 
-    async def decrease_reserved(self, sku: str, amount: int):
+    async def increase_reserved(self, sku: str, amount: int, version: int) -> None:
         await self._db[self._projection_collection].update_one(
-            {"sku": sku},
+            {"sku": sku, "last_applied_version": {"$lt": version}},
             {
-                "$inc": {
-                    "reserved": amount,
-                }
+                "$inc": {"reserved": amount},
+                "$set": {"last_applied_version": version},
             },
         )
 
-    async def decrease_available_quantity(self, sku: str, amount: int):
+    async def decrease_reserved(self, sku: str, amount: int, version: int) -> None:
         await self._db[self._projection_collection].update_one(
-            {"sku": sku},
+            {"sku": sku, "last_applied_version": {"$lt": version}},
+            {
+                "$inc": {"reserved": amount},
+                "$set": {"last_applied_version": version},
+            },
+        )
+
+    async def decrease_available_quantity(
+        self, sku: str, amount: int, version: int
+    ) -> None:
+        await self._db[self._projection_collection].update_one(
+            {"sku": sku, "last_applied_version": {"$lt": version}},
             {
                 "$inc": {
                     "available_quantity": amount,
-                }
+                },
+                "$set": {"last_applied_version": version},
             },
         )
 
@@ -124,12 +124,14 @@ class InventoryReadRepository(IMongoInventoryReadRepository):
         self,
         sku: str,
         amount: int,
+        version: int,
     ):
         await self._db[self._projection_collection].update_one(
-            {"sku": sku},
+            {"sku": sku, "last_applied_version": {"$lt": version}},
             {
                 "$inc": {
                     "soh": amount,
-                }
+                },
+                "$set": {"last_applied_version": version},
             },
         )
