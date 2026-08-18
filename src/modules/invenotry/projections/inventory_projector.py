@@ -1,14 +1,14 @@
 from src.domain.interfaces.repositories.iinventory import \
     IInventoryProjectionRepository
-from src.modules.invenotry.events.v1.inventory import (InventoryEventDTO,
-                                                       InventoryEventType)
+from src.modules.invenotry.events.v1.inventory_events import (InventoryEventDTO,
+                                                              InventoryEventType)
 
 
 class InventoryProjection:
 
     def __init__(
-        self,
-        repository: IInventoryProjectionRepository,
+            self,
+            repository: IInventoryProjectionRepository,
     ):
         self.repository = repository
 
@@ -26,36 +26,36 @@ class InventoryProjection:
                 )
             case InventoryEventType.STOCK_RESERVED:
                 await self.repository.increase_reserved(
-                    event.sku,
-                    event.reserved,
+                    sku=event.sku,
+                    amount=event.reserved,
                 )
 
             case InventoryEventType.AVAILABLE_QUANTITY_DECREASED:
                 await self.repository.decrease_available_quantity(
-                    event.sku,
-                    event.available_quantity,
+                    sku=event.sku,
+                    amount=event.available_quantity,
                 )
 
             case InventoryEventType.PROCESSED_RESERVED_DECREASED:
                 await self.repository.decrease_reserved(
-                    event.sku,
-                    event.reserved,
+                    sku=event.sku,
+                    amount=event.reserved,
                 )
 
             case InventoryEventType.PROCESSED_RESERVED_SOH_DECREASED:
-                await self.repository.decrease_reserved_and_soh(
-                    event.sku,
-                    event.soh,
+                await self.repository.decrease_soh(
+                    sku=event.sku,
+                    amount=event.soh,
                 )
 
             case InventoryEventType.SOH_REPLACED:
-                await self.repository.replace_soh(
-                    event.sku,
-                    event.soh,
+                await self.repository.set_soh(
+                    sku=event.sku,
+                    soh=event.soh,
                 )
 
             case InventoryEventType.AVAILABLE_QUANTITY_REPLACED:
-                await self.repository.replace_available_quantity(
-                    event.sku,
-                    event.available_quantity,
+                await self.repository.set_available_quantity(
+                    sku=event.sku,
+                    available_quantity=event.available_quantity,
                 )

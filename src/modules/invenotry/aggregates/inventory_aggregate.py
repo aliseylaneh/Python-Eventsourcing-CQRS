@@ -6,7 +6,7 @@ from src.domain.entities.inventory import Inventory
 from src.domain.events.base import Event
 from src.domain.exceptions.inventory import (InvalidRelatedEventType,
                                              InventoryDoesNotExists)
-from src.modules.invenotry.events.v1.inventory import (
+from src.modules.invenotry.events.v1.inventory_events import (
     AvailableQuantityDecreasedEvent, AvailableQuantityReplacedEvent,
     BaseInventoryDetailEvent, InventoryCreatedEvent, InventoryEventType,
     ProcessedReservedDecreasedEvent, ProcessedReservedSOHDecreasedEvent,

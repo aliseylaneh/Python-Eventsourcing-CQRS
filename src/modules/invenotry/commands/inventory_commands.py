@@ -5,7 +5,7 @@ from src.domain.entities.inventory import Inventory
 from src.domain.exceptions.inventory import (InventoryAlreadyExists,
                                              InventoryDoesNotExists)
 
-from ..aggregates.inventory import InventoryAggregate
+from ..aggregates.inventory_aggregate import InventoryAggregate
 
 
 class CreateInventoryCommand(BaseCommand):

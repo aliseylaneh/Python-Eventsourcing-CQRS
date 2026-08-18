@@ -27,6 +27,7 @@ class UpdateInventory(UserIDDTO, BaseModel):
 
 
 class InventoryResponse(BaseModel):
+    id: UUID
     sku: str
     soh: int
     reserved: int

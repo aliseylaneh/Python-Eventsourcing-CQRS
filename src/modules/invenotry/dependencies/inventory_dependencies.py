@@ -7,12 +7,12 @@ from adapter.mongo import db, event_collection
 from src.domain.aggregates.base import AggregateRoot
 from src.domain.interfaces.repositories.iinventory import \
     IInventoryRepository
-from src.modules.invenotry.aggregates.inventory import InventoryAggregate
-from src.modules.invenotry.commands.inventory import (
+from src.modules.invenotry.aggregates.inventory_aggregate import InventoryAggregate
+from src.modules.invenotry.commands.inventory_commands import (
     CompleteReservedStockCommand, CreateInventoryCommand, ReserveStockCommand,
     UpdateInventoryCommand)
-from src.modules.invenotry.queries.inventory import GetInventoryQuery
-from src.modules.invenotry.repositories.mongo_inventory import \
+from src.modules.invenotry.queries.inventory_queries import GetInventoryQuery
+from src.modules.invenotry.repositories.inventory_mongo_repository import \
     InventoryMongoRepository
 
 

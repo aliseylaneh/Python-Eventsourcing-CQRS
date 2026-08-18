@@ -7,4 +7,4 @@ from src.domain.interfaces.repositories.iinventory import \
 
 class BaseQuery(IUseCase, ABC):
     def __init__(self, repository: IInventoryRepository):
-        self.repository = repository
+        self._repository = repository
