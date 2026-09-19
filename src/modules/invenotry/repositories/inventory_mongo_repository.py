@@ -106,7 +106,9 @@ class InventoryWriteRepository(IMongoInventoryWriteRepository):
             .sort("version", pymongo.ASCENDING)
             .to_list(length=None)
         )
-        return deque(_document_to_event(event) for event in events_sequence)
+        if len(events_sequence) != 0:
+            return deque(_document_to_event(event) for event in events_sequence)
+        return deque(events_sequence)
 
     async def find_unpublished(self) -> deque[InventoryEventDTO]:
         """
@@ -183,7 +185,7 @@ class InventoryReadRepository(IMongoInventoryReadRepository):
         )
 
     async def set_available_quantity(
-        self, sku: str, available_quantity: int, version: int
+            self, sku: str, available_quantity: int, version: int
     ) -> None:
         """
         Replace projected available quantity when event version is newer than last_applied_version.
@@ -236,7 +238,7 @@ class InventoryReadRepository(IMongoInventoryReadRepository):
         )
 
     async def decrease_available_quantity(
-        self, sku: str, amount: int, version: int
+            self, sku: str, amount: int, version: int
     ) -> None:
         """
         Apply a signed available quantity delta when event version is newer than last_applied_version.
@@ -255,10 +257,10 @@ class InventoryReadRepository(IMongoInventoryReadRepository):
         )
 
     async def decrease_soh(
-        self,
-        sku: str,
-        amount: int,
-        version: int,
+            self,
+            sku: str,
+            amount: int,
+            version: int,
     ) -> None:
         """
         Apply a signed soh delta when event version is newer than last_applied_version.
