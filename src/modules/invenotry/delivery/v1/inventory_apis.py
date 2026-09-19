@@ -104,6 +104,9 @@ async def update(
     inventory: UpdateInventory,
     command: UpdateInventoryCommand = Depends(get_update_inventory_command),
 ) -> InventoryResponse:
+    """
+    This endpoint replaces soh and available quantity of an already created inventory.
+    """
     try:
         inventory = await command.execute(
             user_id=inventory.user_id,
@@ -126,9 +129,18 @@ async def update(
 async def get(
     sku: SKU, command: GetInventoryQuery = Depends(get_inventory_query)
 ) -> InventoryResponse:
+    """
+    This endpoint reads inventory from the projection store.
+    It can lag behind command responses until unpublished outbox events are projected.
+    """
     with tracer.start_as_current_span("get-inventory-api"):
         try:
-            response = await command.execute(sku=sku)
-            return response
+            inventory = await command.execute(sku=sku)
+            return InventoryResponse(
+                sku=inventory["sku"],
+                soh=inventory["soh"],
+                reserved=inventory["reserved"],
+                available_quantity=inventory["available_quantity"],
+            )
         except Exception as exception:
             raise HTTPException(status_code=400, detail=str(exception))
