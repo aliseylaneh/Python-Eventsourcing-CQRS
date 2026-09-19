@@ -7,6 +7,7 @@ from uuid import UUID
 import pymongo
 from pymongo.asynchronous.database import AsyncDatabase
 
+from config.otel import tracer
 from src.domain.events.base import Event
 from src.domain.interfaces.repositories.iinventory import (
     IMongoInventoryReadRepository,
@@ -95,6 +96,7 @@ class InventoryWriteRepository(IMongoInventoryWriteRepository):
         :param sku: sku
         :return: deque[InventoryEventDTO]
         """
+
         events_sequence = (
             await self._db[self._event_collection]
             .find(
@@ -165,11 +167,12 @@ class InventoryReadRepository(IMongoInventoryReadRepository):
         :param sku: sku
         :return: projected inventory or None
         """
-        result = await self._db[self._projection_collection].find_one(
-            {"sku": sku},
-            {"_id": 0, "last_applied_version": 0},
-        )
-        return result
+        with tracer.start_as_current_span(f"get-{sku}-repository-find"):
+            result = await self._db[self._projection_collection].find_one(
+                {"sku": sku},
+                {"_id": 0, "last_applied_version": 0},
+            )
+            return result
 
     async def set_soh(self, sku: str, soh: int, version: int) -> None:
         """

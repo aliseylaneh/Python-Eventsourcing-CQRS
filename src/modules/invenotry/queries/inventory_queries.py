@@ -13,7 +13,7 @@ class GetInventoryQuery(BaseQuery):
         :param sku: sku
         :return: projected inventory document
         """
-        with tracer.start_as_current_span(f"get-{sku}-inventory-usecase"):
+        with tracer.start_as_current_span(f"get-{sku}-query"):
             inventory = await self._repository.find(sku=sku)
             if inventory is None:
                 raise InventoryDoesNotExists()
