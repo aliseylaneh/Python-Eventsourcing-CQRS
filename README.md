@@ -1,160 +1,56 @@
-Python-Eventsourcing-CQRS
+# Python Event Sourcing + CQRS
 
-This project is a Python-based implementation of **Domain-Driven Design (DDD)**, **Event Sourcing**, and **CQRS (Command Query Responsibility Segregation)** using the FastAPI framework. It showcases the use of repository and aggregate patterns, emphasizing modularity, scalability, and clean architecture principles.
+A FastAPI inventory service that stores **events**, not current state. Commands write to an event store. Queries read a projection that is built asynchronously from those events.
 
-## Features
-- **Domain-Driven Design (DDD):** Clear separation of concerns between domain, application, and infrastructure layers.
-- **Event Sourcing:** Persistence of domain events instead of current state, enabling robust historical tracking and debugging.
-- **CQRS:** Segregation of commands (write operations) and queries (read operations) for better scalability and performance.
-- **Repository Pattern:** Abstracts data storage implementation.
-- **Aggregate Pattern:** Ensures domain integrity and consistency.
+## How it works
 
----
-
-## Directory Structure
-```plaintext
-└── aliseylaneh-Python-Eventsourcing-CQRS/
-    ├── README.md
-    ├── docker-compose.dev.yml
-    ├── docker-compose.yml
-    ├── main.py
-    ├── pyproject.toml
-    ├── adapter/
-    ├── config/
-    ├── docker/
-    ├── internal/            # Domain logic and core business rules
-    │   ├── domain/          # DDD Aggregates, Commands, Entities, Events, Exceptions
-    │   ├── es/              # Event sourcing utilities and services
-    │   └── modules/         # Use-case and layer implementations
-    └── ...
+```text
+API  →  Command  →  Aggregate  →  Event store + outbox
+                                      ↓
+GET  ←  Query    ←  Projection  ←  outbox worker
 ```
 
-### Key Components
+1. A command loads the event stream for a SKU and rebuilds `InventoryAggregate`.
+2. New events are written in one transaction to `inventory_events` and `inventory_outbox`.
+3. A background worker projects unpublished outbox events into `inventory_projections`.
+4. `GET /inventory/{sku}` reads the projection. It can lag a moment behind a write.
 
-1. **Domain Layer (`src/domain/`):**
-   - Aggregates: Encapsulates business logic and ensures consistency.
-   - Commands: Represents domain commands (write operations).
-   - Entities: Core business objects.
-   - Events: Domain events for event sourcing.
-   - Exceptions: Custom exceptions for domain logic.
-   - Interfaces: Defines contracts (e.g., repositories, use cases).
+Inventory actions: **create**, **reserve**, **complete reserved stock**, **update**, **get**.
 
-2. **Event Sourcing (`src/es/`):**
-   - Reconstructs the current state by replaying domain events.
+## Layout
 
-3. **Modules Layer (`src/modules/`):**
-   - Implements use cases and integrates domain logic with infrastructure.
-
-4. **Adapters (`adapter/`):**
-   - Infrastructure-related implementations (e.g., MongoDB adapters).
-
-5. **Configuration (`config/`):**
-   - Configuration utilities (e.g., MongoDB, OpenTelemetry).
-
----
-
-## Running the Project
-
-### Prerequisites
-- Docker and Docker Compose
-
-### Steps
-1. **Clone the repository:**
-   ```bash
-   git clone <repository-url>
-   cd aliseylaneh-Python-Eventsourcing-CQRS
-   ```
-
-2. **Start the infrastructure using Docker Compose:**
-   ```bash
-   docker-compose up -d
-   ```
-   This starts the following services:
-   - MongoDB: Database for event persistence.
-   - Mongo-Express: MongoDB web UI (accessible at `http://localhost:8081`).
-   - Elasticsearch: Used for logging and tracing.
-   - Jaeger: Distributed tracing (accessible at `http://localhost:16686`).
-
-3. **Run the application:**
-   ```bash
-   uvicorn main:app --reload
-   ```
-   The FastAPI application will be available at `http://localhost:8000`.
-
----
-
-## Example Domain Implementation
-
-### Aggregate Root Example
-```python
-class AggregateRoot(ABC):
-    def __init__(self, repository: IInventoryRepository):
-        self.repository = repository
-
-    def commit(self):
-        self.repository.insert(events=self.events)
-
-    def _apply(self, event):
-        self._when(event=event)
-        self.events.append(event)
+```text
+src/domain/                 shared contracts, entity, aggregate base
+src/modules/invenotry/      inventory use cases
+  aggregates/               event handlers and new-event factories
+  commands/                 write use cases
+  queries/                  read use cases
+  repositories/             Mongo event store, outbox, projection
+  projections/              event → read model
+  tasks/                    outbox worker
+  delivery/v1/              HTTP API
+adapter/                    Mongo client
+config/                     Mongo and tracing settings
+main.py                     FastAPI app
 ```
 
-### Inventory Entity Example
-```python
-@dataclass
-class Inventory:
-    sku: str = field(default='')
-    soh: int = field(default=0)
-    available_quantity: int = field(default=0)
-    reserved: int = field(default=0)
+## Run
 
-    def set_soh(self, soh: int):
-        if self.reserved >= soh:
-            raise ReservedStockInProcess()
-        self.soh = soh
+```bash
+docker compose up -d
+uvicorn main:app --reload
 ```
 
-### Event Sourcing Utility Example
-```python
-class MongoDBInventoryUtility(IEventSourcingUtility):
-    @staticmethod
-    def recreate_state(repository: IInventoryRepository, sku: str) -> Inventory | None:
-        events = repository.find(sku=sku)
-        inventory = Inventory(sku='')
-        for event in events:
-            # Process events to recreate state
-            ...
-        return inventory
-```
-<img width="3740" height="8555" alt="diagram" src="https://github.com/user-attachments/assets/ab1f24de-1193-42af-a540-e43c2d64902e" />
+App: http://localhost:8000  
+Docs: http://localhost:8000/docs  
+Mongo Express: http://localhost:8081  
+Jaeger: http://localhost:16686  
 
----
+Mongo defaults: `localhost:27017`, database `inventory`, user `admin`, password `1234`.
 
-## Configuration
+## Upcoming
 
-### MongoDB
-MongoDB is used as the primary event store. The default connection details are:
-- Host: `localhost`
-- Port: `27017`
-- Database: `inventory`
-- Username: `admin`
-- Password: `1234`
-
-### Distributed Tracing
-- Jaeger is used for distributed tracing.
-- Access the Jaeger UI at `http://localhost:16686`.
-
----
-
-## Contributing
-1. Fork the repository.
-2. Create a feature branch: `git checkout -b feature-name`.
-3. Commit changes: `git commit -m 'Add feature'`.
-4. Push to the branch: `git push origin feature-name`.
-5. Create a pull request.
-
----
-
-## Contact
-For questions or support, please open an issue or reach me by emailing or sending message in LinkedIn.
-
+- **Observability** — tracing, metrics, and clearer request/event correlation
+- **Caching** — faster reads on the projection without hitting Mongo every time
+- **Snapshotting** — avoid replaying the full event stream as aggregates grow
+- **Deployment and scalability** — how to run, split, and scale the write path, read path, and workers
